@@ -1,6 +1,6 @@
 const GITHUB_API = "https://api.github.com";
 const HEADERS = {
-  // Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+  Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
   "Content-Type": "application/json",
 };
 
@@ -12,7 +12,6 @@ export async function getUserRepos(username: string) {
     `${GITHUB_API}/users/${username}/repos?per_page=100`,
     {
       headers: HEADERS,
-      next: { revalidate: 3600 }, // optional: 캐시
     }
   );
   if (!res.ok) throw new Error(`Fail to get repos: ${res.status}`);

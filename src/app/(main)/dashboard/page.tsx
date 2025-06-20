@@ -16,7 +16,7 @@ export default async function DashboardPage() {
       <ul>
         {repos.map((repo: any) => (
           <li key={repo.id}>
-            ⭐ {repo.name} - {repo.stargazers_count} stars
+            ⭐ {repo.updated_at} - {repo.name} - {repo.stargazers_count} stars
           </li>
         ))}
       </ul>
