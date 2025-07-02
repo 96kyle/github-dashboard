@@ -1,4 +1,3 @@
-// components/Calendar.tsx
 "use client";
 
 import { useState } from "react";
@@ -13,11 +12,13 @@ export default function Calendar() {
   });
 
   return (
-    <div className="w-80 mx-auto p-4 border-0 rounded-lg bg-bg">
-      <h2 className="text-xl font-bold mb-4">{format(today, "yyyy년 M월")}</h2>
-      <div className="grid grid-cols-7 gap-2 text-center">
+    <div className="p-4 pt-6 border-0 rounded-lg bg-bg">
+      <div className="grid grid-cols-7 text-left ">
         {["일", "월", "화", "수", "목", "금", "토"].map((d) => (
-          <div key={d} className="font-bold text-gray-600">
+          <div
+            key={d}
+            className="font-bold text-gray-600 border-b-1 border-gray-300"
+          >
             {d}
           </div>
         ))}
@@ -25,9 +26,9 @@ export default function Calendar() {
           <div
             key={date.toISOString()}
             onClick={() => setSelectedDate(date)}
-            className={`p-1 text-fontGrey font-semibold rounded-full cursor-pointer aspect-square ${
+            className={`text-fontGrey font-semibold cursor-pointer aspect-square text-left p-1 ${
               selectedDate?.toDateString() === date.toDateString()
-                ? "bg-fontNavy text-white font-bold"
+                ? "bg-background text-white font-bold"
                 : "hover:bg-blue-100"
             }`}
           >
