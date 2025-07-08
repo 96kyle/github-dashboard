@@ -1,5 +1,8 @@
+export type ActivityType = "pr" | "issue" | "review" | "commit";
+
 export type ActivityItem = {
-  type: "PR" | "Issue" | "Review" | "Commit";
+  type: ActivityType;
+  repo: string;
   title: string;
   url: string;
   createdAt: string;
@@ -8,4 +11,9 @@ export type ActivityItem = {
 
 export type DailyActivityMap = {
   [date: string]: ActivityItem[];
+};
+
+export type MergedActivity = {
+  map: DailyActivityMap;
+  totalCount: Record<ActivityType, number>;
 };

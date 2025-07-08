@@ -1,4 +1,9 @@
-import { DailyActivityMap } from "@/app/(main)/dashboard/types/activities";
+import {
+  ActivityItem,
+  ActivityType,
+  DailyActivityMap,
+  MergedActivity,
+} from "@/app/(main)/dashboard/types/activities";
 
 const GITHUB_API = "https://api.github.com";
 const GITHUB_API_GRAPH = "https://api.github.com/graphql";
@@ -7,84 +12,117 @@ const HEADERS = {
   "Content-Type": "application/json",
 };
 
-export async function getUserRepos(username: string) {
-  const res = await fetch(
-    `${GITHUB_API}/users/${username}/repos?per_page=100`,
-    {
-      headers: HEADERS,
+//기간 중 활동한 레포지토리 목록 api
+export async function getContributedReposInRange(
+  username: string,
+  from: string,
+  to: string
+): Promise<{ owner: string; name: string }[]> {
+  const query = `
+    query($username: String!, $from: DateTime!, $to: DateTime!) {
+      user(login: $username) {
+        contributionsCollection(from: $from, to: $to) {
+          commitContributionsByRepository {
+            repository {
+              name
+              owner {
+                login
+              }
+            }
+          }
+        }
+      }
     }
-  );
-  if (!res.ok) throw new Error(`Fail to get repos: ${res.status}`);
-  return res.json();
+  `;
+
+  const res = await fetch(GITHUB_API_GRAPH, {
+    method: "POST",
+    headers: HEADERS,
+    body: JSON.stringify({
+      query,
+      variables: { username, from, to },
+    }),
+  });
+
+  const json = await res.json();
+  if (json.errors) {
+    console.error("GraphQL Error:", json.errors);
+    throw new Error("GraphQL query failed");
+  }
+
+  const repos = new Set<string>();
+
+  const push = (owner: string, name: string) => {
+    repos.add(`${owner}/${name}`);
+  };
+
+  const data = json.data.user.contributionsCollection;
+
+  data.commitContributionsByRepository.forEach((entry: any) => {
+    push(entry.repository.owner.login, entry.repository.name);
+  });
+
+  return Array.from(repos).map((fullName) => {
+    const [owner, name] = fullName.split("/");
+    return { owner, name };
+  });
 }
 
-export async function getRepoCommits(username: string, repo: string) {
-  const res = await fetch(
-    `${GITHUB_API}/repos/${username}/${repo}/commits?per_page=100`,
-    {
-      headers: HEADERS,
-    }
-  );
-  if (!res.ok) throw new Error(`Fail to get commits: ${res.status}`);
-  return res.json();
-}
-
-export async function getRepoPullRequests(username: string, repo: string) {
-  const res = await fetch(
-    `${GITHUB_API}/repos/${username}/${repo}/pulls?state=all`,
-    {
-      headers: HEADERS,
-    }
-  );
-  if (!res.ok) throw new Error(`Fail to get PRs: ${res.status}`);
-  return res.json();
-}
-
-export async function getRepoIssues(username: string, repo: string) {
-  const res = await fetch(
-    `${GITHUB_API}/repos/${username}/${repo}/issues?state=all`,
-    {
-      headers: HEADERS,
-    }
-  );
-  if (!res.ok) throw new Error(`Fail to get issues: ${res.status}`);
-  return res.json();
-}
-
-export async function getCommitsInRepo(
+//레포 별 커밋 목록 호출 api
+export async function fetchCommitsForRepo(
   owner: string,
   repo: string,
   username: string,
-  since: string, // e.g. "2025-06-01T00:00:00Z"
-  until: string // e.g. "2025-06-30T23:59:59Z"
-) {
-  const url = `https://api.github.com/repos/${owner}/${repo}/commits?author=${username}&since=${since}&until=${until}`;
+  since: string,
+  until: string
+): Promise<ActivityItem[]> {
+  const url = `${GITHUB_API}/repos/${owner}/${repo}/commits?author=${username}&since=${since}&until=${until}`;
 
   const res = await fetch(url, {
-    method: "GET",
     headers: HEADERS,
   });
 
-  if (res.status !== 200) {
-    console.error(`❌ Failed to fetch commits: ${res.status}`);
-    return [];
-  }
-
   const json = await res.json();
-
-  if (!Array.isArray(json)) {
-    console.error("Unexpected response:", json);
-    return [];
-  }
+  if (!Array.isArray(json)) return [];
 
   return json.map((commit: any) => ({
-    message: commit.commit.message.split("\n")[0],
+    state: "",
+    title: commit.commit.message.split("\n")[0],
+    repo: `${owner}/${repo}`,
     url: commit.html_url,
-    date: commit.commit.author.date,
-    sha: commit.sha,
+    createdAt: commit.commit.author.date,
+    type: "commit",
   }));
 }
 
+//기간 중 모든 커밋 내용 호출 api
+export async function getAllCommits(
+  username: string,
+  from: string,
+  to: string
+): Promise<DailyActivityMap> {
+  const repos = await getContributedReposInRange(username, from, to);
+  const result: DailyActivityMap = {};
+
+  const results = await Promise.all(
+    repos.map((repo) =>
+      fetchCommitsForRepo(repo.owner, repo.name, username, from, to)
+    )
+  );
+
+  for (const commits of results) {
+    for (const commit of commits) {
+      const date = commit.createdAt.split("T")[0];
+      if (!result[date]) result[date] = [];
+
+      result[date].push(commit);
+    }
+  }
+
+  return result;
+}
+
+//기간동안 모든 pr, issues, review 호출 api
 export async function getActivities(
   username: string,
   from: string,
@@ -99,12 +137,30 @@ export async function getActivities(
             url
             createdAt
             state
+            author {
+              login
+            }
+            repository {
+              name
+              owner {
+                login
+              }
+            }
           }
           ... on Issue {
             title
             url
             createdAt
             state
+            author {
+              login
+            }
+            repository {
+              name
+              owner {
+                login
+              }
+            }
           }
         }
       }
@@ -118,6 +174,12 @@ export async function getActivities(
                 title
                 url
                 state
+                repository {
+                  name
+                  owner {
+                    login
+                  }
+                }
               }
             }
           }
@@ -155,30 +217,80 @@ export async function getActivities(
 
   json.data.search.nodes.forEach((node: any) => {
     const date = node.createdAt.split("T")[0];
-    const type = node.url.includes("/pull/") ? "PR" : "Issue";
-    if (!result[date]) result[date] = [];
-    result[date].push({
-      title: node.title,
-      url: node.url,
-      createdAt: node.createdAt,
-      type,
-      state: node.state,
-    });
+    const type = node.url.includes("/pull/") ? "pr" : "issue";
+    const repo = `${node.repository.owner.login}/${node.repository.name}`;
+
+    if (node.author.login === username) {
+      if (!result[date]) result[date] = [];
+
+      result[date].push({
+        title: node.title,
+        url: node.url,
+        createdAt: node.createdAt,
+        type,
+        state: node.state,
+        repo,
+      });
+    }
   });
 
   const reviews =
     json.data.user.contributionsCollection.pullRequestReviewContributions.nodes;
   reviews.forEach((review: any) => {
     const date = review.occurredAt.split("T")[0];
+    const repo = `${review.pullRequest.repository.owner.login}/${review.pullRequest.repository.name}`;
+
     if (!result[date]) result[date] = [];
     result[date].push({
       title: review.pullRequest.title,
       url: review.pullRequest.url,
       createdAt: review.occurredAt,
-      type: "Review",
+      type: "review",
       state: review.pullRequest.state,
+      repo,
     });
   });
 
   return result;
+}
+
+export async function fetchData({
+  username,
+  from,
+  to,
+}: {
+  username: string;
+  from: string;
+  to: string;
+}): Promise<MergedActivity> {
+  const [commitMap, activityMap] = await Promise.all([
+    getAllCommits(username, from, to),
+    getActivities(username, from, to),
+  ]);
+  const merged: DailyActivityMap = {};
+  const totalCount: Record<ActivityType, number> = {
+    pr: 0,
+    issue: 0,
+    review: 0,
+    commit: 0,
+  };
+
+  const allDates = new Set([
+    ...Object.keys(commitMap),
+    ...Object.keys(activityMap),
+  ]);
+
+  for (const date of allDates) {
+    const items = [...(commitMap[date] ?? []), ...(activityMap[date] ?? [])];
+    merged[date] = items;
+
+    for (const item of items) {
+      totalCount[item.type] += 1;
+    }
+  }
+
+  return {
+    map: merged,
+    totalCount: totalCount,
+  };
 }
