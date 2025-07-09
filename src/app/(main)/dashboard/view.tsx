@@ -1,23 +1,38 @@
 "use client";
 
-import { fetchData } from "@/api/api";
+import { fetchData } from "@/app/lib/services/api";
 import Calendar from "@/components/Calender";
-import { endOfMonth, format, startOfMonth, subMonths } from "date-fns";
+import {
+  addMonths,
+  endOfMonth,
+  format,
+  startOfMonth,
+  subMonths,
+} from "date-fns";
 import ActivityCount from "./components/ActivityCount";
-import { FaCodeCommit, FaCodePullRequest } from "react-icons/fa6";
+import {
+  FaCodeCommit,
+  FaCodePullRequest,
+  FaCaretLeft,
+  FaCaretRight,
+} from "react-icons/fa6";
 import { VscIssues, VscCodeReview } from "react-icons/vsc";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
 export default function DashboardView({
   username,
-  from,
-  to,
+  today,
 }: {
   username: string;
-  from: string;
-  to: string;
+  today: Date;
 }) {
-  const prevMonth = subMonths(from, 1);
+  const [selectedMonth, setSelectedMonth] = useState<Date>(today);
+
+  const from = startOfMonth(selectedMonth).toISOString();
+  const to = endOfMonth(selectedMonth).toISOString();
+
+  const prevMonth = subMonths(selectedMonth, 1);
   const prevFrom = startOfMonth(prevMonth).toISOString();
   const prevTo = endOfMonth(prevMonth).toISOString();
 
@@ -43,12 +58,32 @@ export default function DashboardView({
     staleTime: 1000 * 60 * 5,
   });
 
+  async function moveMonth(isPrev: boolean) {
+    if (isPrev) {
+      setSelectedMonth(subMonths(selectedMonth, 1));
+    } else {
+      setSelectedMonth(addMonths(selectedMonth, 1));
+    }
+  }
+
   return (
     <div>
       <div className="w-full p-6">
-        <h1 className="text-2xl font-bold mb-4 text-fontNavy">
-          {format(from, "yyyy년 M월")}
-        </h1>
+        <div className="flex flex-row items-center justify-center mb-4">
+          <FaCaretLeft
+            size={24}
+            className="cursor-pointer"
+            onClick={() => moveMonth(true)}
+          />
+          <div className="text-2xl font-bold text-fontNavy px-2">
+            {format(selectedMonth, "yyyy년 M월")}
+          </div>
+          <FaCaretRight
+            size={24}
+            className="cursor-pointer"
+            onClick={() => moveMonth(false)}
+          />
+        </div>
         <div className="flex flex-row mb-4 gap-6">
           <ActivityCount
             count={currentData?.totalCount.commit ?? 0}
@@ -77,7 +112,7 @@ export default function DashboardView({
         </div>
         <div className="flex flex-row">
           <div className="flex-4">
-            <Calendar />
+            <Calendar data={currentData!.map} date={selectedMonth} />
           </div>
           <div className="flex-3"></div>
         </div>

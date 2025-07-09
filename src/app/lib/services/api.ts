@@ -4,6 +4,7 @@ import {
   DailyActivityMap,
   MergedActivity,
 } from "@/app/(main)/dashboard/types/activities";
+import { headers } from "next/headers";
 
 const GITHUB_API = "https://api.github.com";
 const GITHUB_API_GRAPH = "https://api.github.com/graphql";
@@ -76,7 +77,7 @@ export async function fetchCommitsForRepo(
   since: string,
   until: string
 ): Promise<ActivityItem[]> {
-  const url = `${GITHUB_API}/repos/${owner}/${repo}/commits?author=${username}&since=${since}&until=${until}`;
+  const url = `${GITHUB_API}/repos/${owner}/${repo}/commits?author=${username}&since=${since}&until=${until}&per_page=100`;
 
   const res = await fetch(url, {
     headers: HEADERS,
@@ -254,7 +255,7 @@ export async function getActivities(
   return result;
 }
 
-export async function fetchData({
+export async function serverFetch({
   username,
   from,
   to,
@@ -293,4 +294,42 @@ export async function fetchData({
     map: merged,
     totalCount: totalCount,
   };
+}
+
+export async function clientFetch({
+  username,
+  from,
+  to,
+}: {
+  username: string;
+  from: string;
+  to: string;
+}) {
+  const res = await fetch("/api/github", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, from, to }),
+  });
+
+  if (!res.ok) throw new Error("클라이언트 요청 실패");
+  return await res.json();
+}
+
+export async function fetchData({
+  username,
+  from,
+  to,
+}: {
+  username: string;
+  from: string;
+  to: string;
+}): Promise<MergedActivity> {
+  // 서버 환경인지 감지
+  const isServer = typeof window === "undefined";
+
+  if (isServer) {
+    return serverFetch({ username, from, to });
+  } else {
+    return clientFetch({ username, from, to });
+  }
 }

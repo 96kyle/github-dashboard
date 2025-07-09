@@ -1,4 +1,4 @@
-import { fetchData, getActivities, getAllCommits } from "@/api/api";
+import { fetchData } from "@/app/lib/services/api";
 import DashboardView from "./view";
 import {
   dehydrate,
@@ -38,7 +38,7 @@ export default async function DashboardPage() {
       </div>
 
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <DashboardView username={username} from={from} to={to} />
+        <DashboardView username={username} today={today} />
       </HydrationBoundary>
     </div>
   );

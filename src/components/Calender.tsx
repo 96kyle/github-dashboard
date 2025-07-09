@@ -1,20 +1,50 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval } from "date-fns";
+import { DailyActivityMap } from "@/app/(main)/dashboard/types/activities";
 
-export default function Calendar() {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-  const today = new Date();
+export default function Calendar({
+  data,
+  date,
+}: {
+  data: DailyActivityMap;
+  date: Date;
+}) {
+  const [selectedDate, setSelectedDate] = useState<Date>(date);
 
-  const start = startOfMonth(today);
-  const end = endOfMonth(today);
+  useEffect(() => {
+    setSelectedDate(date);
+  }, [date]);
+
+  const start = startOfMonth(selectedDate);
+  const end = endOfMonth(selectedDate);
   const monthDays = eachDayOfInterval({ start, end });
 
   const startDay = start.getDay();
 
+  function returnColor(clickDate: Date) {
+    const formatDate: string = format(clickDate, "yyyy-MM-dd");
+
+    if (data[formatDate]) {
+      if (data[formatDate].length >= 5) {
+        return "bg-green-700";
+      } else if (data[formatDate].length >= 4) {
+        return "bg-green-600";
+      } else if (data[formatDate].length >= 3) {
+        return "bg-green-500";
+      } else if (data[formatDate].length >= 2) {
+        return "bg-green-400";
+      } else if (data[formatDate].length >= 1) {
+        return "bg-green-300";
+      }
+    } else {
+      return "";
+    }
+  }
+
   return (
-    <div className="p-4 pt-6 border-0 rounded-lg bg-bg">
+    <div className="p-4 pt-6 border-0 rounded-lg bg-bg shadow">
       <div className="grid grid-cols-7 text-left">
         {["일", "월", "화", "수", "목", "금", "토"].map((d) => (
           <div
@@ -26,21 +56,23 @@ export default function Calendar() {
         ))}
 
         {Array.from({ length: startDay }).map((_, idx) => (
-          <div key={`empty-${idx}`} />
+          <div key={`empty-${idx}`} className="" />
         ))}
 
         {monthDays.map((date) => (
           <div
             key={date.toISOString()}
             onClick={() => setSelectedDate(date)}
-            className={`text-fontGrey font-semibold cursor-pointer aspect-square text-left p-1 flex justify-start
+            className={`text-fontGrey font-semibold cursor-pointer aspect-square text-left p-1 flex justify-start bg-bg
               ${
                 selectedDate?.toDateString() === date.toDateString()
-                  ? "shadow-xl font-bold bg-white"
-                  : "hover:bg-blue-100"
+                  ? `shadow-[0_0_8px_8px_rgba(0,0,0,0.3)] font-bold z-10  ${returnColor(
+                      date
+                    )}`
+                  : `hover:bg-blue-100 ${returnColor(date)}`
               }`}
           >
-            {date.getDate()}
+            <div className="px-1">{date.getDate()}</div>
           </div>
         ))}
       </div>
