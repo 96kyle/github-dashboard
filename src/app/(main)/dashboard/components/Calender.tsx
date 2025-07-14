@@ -1,15 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval } from "date-fns";
 import { DailyActivityMap } from "@/app/types/activities/activity_type";
 
 export default function Calendar({
   data,
+  count,
   selectedDate,
   setSelectedDate,
 }: {
   data: DailyActivityMap;
+  count: number;
   selectedDate: Date;
   setSelectedDate: React.Dispatch<React.SetStateAction<Date>>;
 }) {
@@ -59,13 +60,11 @@ export default function Calendar({
         ))}
       </div>
 
-      {/* 캘린더 그리드 */}
       <div className="grid grid-cols-7 gap-2">
+        {Array.from({ length: startDay }).map((_, i) => (
+          <div key={i} className="h-12"></div>
+        ))}
         {monthDays.map((day, index) => {
-          if (day === null) {
-            return <div key={index} className="h-16"></div>;
-          }
-
           const isSelected = day.toDateString() === selectedDate.toDateString();
 
           return (
@@ -73,7 +72,7 @@ export default function Calendar({
               key={index}
               onClick={() => setSelectedDate(day)}
               className={`
-                          h-16 rounded-lg border-2 transition-all duration-200 text-lg font-medium flex items-center justify-center cursor-pointer
+                          h-12 rounded-lg border-2 transition-all duration-200 text-base font-medium flex items-center justify-center cursor-pointer
                           ${
                             isSelected
                               ? "border-blue-500 bg-blue-50 text-blue-700 ring-2 ring-blue-200"
@@ -88,6 +87,20 @@ export default function Calendar({
             </button>
           );
         })}
+      </div>
+      <div className="flex flex-row pt-6 justify-between">
+        <div className="flex items-center gap-2 text-sm text-gray-600">
+          <span>적음</span>
+          <div className="flex gap-1">
+            <div className="w-3 h-3 bg-gray-100 rounded-sm"></div>
+            <div className="w-3 h-3 bg-green-200 rounded-sm"></div>
+            <div className="w-3 h-3 bg-green-300 rounded-sm"></div>
+            <div className="w-3 h-3 bg-green-400 rounded-sm"></div>
+            <div className="w-3 h-3 bg-green-500 rounded-sm"></div>
+          </div>
+          <span>많음</span>
+        </div>
+        <div className="text-sm text-gray-500">총 {count}개의 활동</div>
       </div>
     </div>
   );

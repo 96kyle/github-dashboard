@@ -10,19 +10,19 @@ import {
   subMonths,
 } from "date-fns";
 import ActivityCount from "./components/ActivityCount";
-import {
-  FaCodeCommit,
-  FaCodePullRequest,
-  FaCaretLeft,
-  FaCaretRight,
-} from "react-icons/fa6";
-import { VscIssues, VscCodeReview } from "react-icons/vsc";
+import { FaCaretLeft, FaCaretRight } from "react-icons/fa6";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import DashboardFallbackView from "./fallback/DashboardFallbackView";
 import { useDebounce } from "use-debounce";
 import { LoginInfo } from "../../types/users/user_type";
 import ActivityHistory from "./components/ActivityHistory";
+import {
+  AlertCircle,
+  GitCommit,
+  GitPullRequest,
+  MessageSquare,
+} from "lucide-react";
 
 export default function DashboardView({
   today,
@@ -119,48 +119,48 @@ export default function DashboardView({
               <ActivityCount
                 count={currentData?.totalCount.commit ?? 0}
                 title="Commits"
-                Icon={FaCodeCommit}
+                Icon={GitCommit}
+                iconColor="text-green-600"
                 beforeCount={prevData?.totalCount.commit ?? 0}
               />
               <ActivityCount
                 count={currentData?.totalCount.issue ?? 0}
                 title="Issues"
-                Icon={VscIssues}
+                Icon={AlertCircle}
+                iconColor="text-gray-600"
                 beforeCount={prevData?.totalCount.issue ?? 0}
               />
               <ActivityCount
                 count={currentData?.totalCount.pr ?? 0}
                 title="PRs"
-                Icon={FaCodePullRequest}
+                Icon={GitPullRequest}
+                iconColor="text-blue-600"
                 beforeCount={prevData?.totalCount.pr ?? 0}
               />
               <ActivityCount
                 count={currentData?.totalCount.review ?? 0}
                 title="PR Reveiws"
-                Icon={VscCodeReview}
+                Icon={MessageSquare}
+                iconColor="text-purple-600"
                 beforeCount={prevData?.totalCount.review ?? 0}
               />
             </div>
+            <Calendar
+              data={currentData!.map}
+              count={
+                (currentData?.totalCount.commit ?? 0) +
+                (currentData?.totalCount.pr ?? 0) +
+                (currentData?.totalCount.issue ?? 0) +
+                (currentData?.totalCount.review ?? 0)
+              }
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+            />
 
-            <div className="flex flex-row gap-4">
-              <div className="min-w-0 flex-1">
-                <Calendar
-                  data={currentData!.map}
-                  selectedDate={selectedDate}
-                  setSelectedDate={setSelectedDate}
-                />
-              </div>
-              {/* <div className="flex-1">
-                <ActivityHistory
-                  date={selectedDate}
-                  items={currentData?.map ?? {}}
-                />
-              </div> */}
-            </div>
-
-            <div className="flex flex-col flex-1">
-              <div className="flex flex-row gap-4 pl-4"></div>
-            </div>
+            <ActivityHistory
+              items={currentData?.map ?? {}}
+              selectedDate={selectedDate}
+            />
           </>
         )}
       </div>
