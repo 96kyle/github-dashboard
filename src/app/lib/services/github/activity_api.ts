@@ -69,6 +69,11 @@ export async function getContributedReposInRange({
   });
 }
 
+function hasNextPage(headers: Headers): boolean {
+  const link = headers.get("link");
+  return link?.includes('rel="next"') ?? false;
+}
+
 //레포 별 커밋 목록 호출 api
 export async function fetchCommitsForRepo(
   owner: string,
@@ -77,27 +82,44 @@ export async function fetchCommitsForRepo(
   since: string,
   until: string,
   token: string
-): Promise<ActivityItem[]> {
-  const url = `${GITHUB_API}/repos/${owner}/${repo}/commits?author=${username}&since=${since}&until=${until}&per_page=100`;
+) {
+  let page = 1;
+  const allCommits: ActivityItem[] = [];
 
-  const res = await fetch(url, {
-    headers: {
-      Authorization: `token ${token}`,
-      "Content-Type": "application/json",
-    },
-  });
+  while (true) {
+    const url = `${GITHUB_API}/repos/${owner}/${repo}/commits?author=${username}&since=${since}&until=${until}&per_page=100&page=${page}`;
 
-  const json = await res.json();
-  if (!Array.isArray(json)) return [];
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `token ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
 
-  return json.map((commit: any) => ({
-    state: "",
-    title: commit.commit.message.split("\n")[0],
-    repo: `${owner}/${repo}`,
-    url: commit.html_url,
-    createdAt: commit.commit.author.date,
-    type: "commit",
-  }));
+    const json = await res.json();
+    if (!Array.isArray(json)) break;
+
+    const commits = json.map(
+      (commit: any) =>
+        ({
+          state: "",
+          title: commit.commit.message.split("\n")[0],
+          repo: `${owner}/${repo}`,
+          url: commit.html_url,
+          createdAt: commit.commit.author.date,
+          type: "commit",
+        } as ActivityItem)
+    );
+
+    allCommits.push(...commits);
+
+    // ✅ Link 헤더에 next 없으면 종료
+    if (!hasNextPage(res.headers)) break;
+
+    page++;
+  }
+
+  return allCommits;
 }
 
 //기간 중 모든 커밋 내용 호출 api
@@ -113,8 +135,6 @@ export async function getAllCommits({
     to,
     token: token,
   });
-
-  console.log(repos);
   const result: DailyActivityMap = {};
 
   const results = await Promise.all(
@@ -328,8 +348,6 @@ export async function fetchData({
 }: ActivityReq): Promise<MergedActivity> {
   // 서버 환경인지 감지
   const isServer = typeof window === "undefined";
-
-  console.log("loginInfo-------------->" + token);
 
   if (isServer) {
     return serverFetch({ username, from, to, token });

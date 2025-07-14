@@ -22,6 +22,7 @@ import { useEffect, useState } from "react";
 import DashboardFallbackView from "./fallback/DashboardFallbackView";
 import { useDebounce } from "use-debounce";
 import { LoginInfo } from "../../types/users/user_type";
+import ActivityHistory from "./components/ActivityHistory";
 
 export default function DashboardView({
   today,
@@ -149,7 +150,12 @@ export default function DashboardView({
                   setSelectedDate={setSelectedDate}
                 />
               </div>
-              <div className="flex-1"></div>
+              <div className="flex-1">
+                <ActivityHistory
+                  date={selectedDate}
+                  items={currentData?.map ?? {}}
+                />
+              </div>
             </div>
 
             <div className="flex flex-col flex-1">

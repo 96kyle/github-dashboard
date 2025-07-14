@@ -40,7 +40,7 @@ export default function Calendar({
   }
 
   return (
-    <div className="p-4 pt-6 border-0 rounded-lg bg-bg shadow">
+    <div className="p-4 pt-6 border-0 rounded-lg bg-bg shadow h-full">
       <div className="grid grid-cols-7 text-left">
         {["일", "월", "화", "수", "목", "금", "토"].map((d) => (
           <div

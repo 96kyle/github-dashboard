@@ -9,6 +9,7 @@ import { endOfMonth, startOfMonth, subMonths } from "date-fns";
 import { LoginButton } from "@/components/LoginButton";
 import { getLoginInfo } from "@/app/lib/services/users/user_api";
 import { LoginInfo } from "../../types/users/user_type";
+import { LogoutButton } from "@/components/LogoutButton";
 
 export default async function DashboardPage() {
   const userInfo: LoginInfo = (await getLoginInfo()) ?? {
@@ -53,13 +54,12 @@ export default async function DashboardPage() {
   return (
     <div>
       <div className="bg-bg p-4 text-2xl  border-b-2 border-gray-300 text-fontNavy flex flex-row justify-between">
-        Dashboard
-        <LoginButton clientId={clientId!} />
-        {/* {loggedInUsername ? (
-          <p>{loggedInUsername}</p>
+        {userInfo.username}님의 Dashboard
+        {userInfo.token === process.env.GITHUB_TOKEN ? (
+          <LoginButton clientId={clientId!} />
         ) : (
-          
-        )} */}
+          <LogoutButton />
+        )}
       </div>
 
       <HydrationBoundary state={dehydrate(queryClient)}>
