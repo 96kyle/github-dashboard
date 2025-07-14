@@ -2,21 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval } from "date-fns";
-import { DailyActivityMap } from "@/app/(main)/dashboard/types/activities";
+import { DailyActivityMap } from "@/app/types/activities/activity_type";
 
 export default function Calendar({
   data,
-  date,
+  selectedDate,
+  setSelectedDate,
 }: {
   data: DailyActivityMap;
-  date: Date;
+  selectedDate: Date;
+  setSelectedDate: React.Dispatch<React.SetStateAction<Date>>;
 }) {
-  const [selectedDate, setSelectedDate] = useState<Date>(date);
-
-  useEffect(() => {
-    setSelectedDate(date);
-  }, [date]);
-
   const start = startOfMonth(selectedDate);
   const end = endOfMonth(selectedDate);
   const monthDays = eachDayOfInterval({ start, end });
@@ -63,9 +59,9 @@ export default function Calendar({
           <div
             key={date.toISOString()}
             onClick={() => setSelectedDate(date)}
-            className={`text-fontGrey font-semibold cursor-pointer aspect-square text-left p-1 flex justify-start bg-bg
+            className={`text-black text-sm cursor-pointer aspect-square text-left p-1 flex justify-start bg-bg
               ${
-                selectedDate?.toDateString() === date.toDateString()
+                date?.toDateString() === selectedDate.toDateString()
                   ? `shadow-[0_0_8px_8px_rgba(0,0,0,0.3)] font-bold z-10  ${returnColor(
                       date
                     )}`

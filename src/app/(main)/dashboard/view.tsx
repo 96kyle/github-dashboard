@@ -1,7 +1,7 @@
 "use client";
 
-import { fetchData } from "@/app/lib/services/api";
-import Calendar from "@/components/Calender";
+import { fetchData } from "@/app/lib/services/github/activity_api";
+import Calendar from "@/app/(main)/dashboard/components/Calender";
 import {
   addMonths,
   endOfMonth,
@@ -18,51 +18,76 @@ import {
 } from "react-icons/fa6";
 import { VscIssues, VscCodeReview } from "react-icons/vsc";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import DashboardFallbackView from "./fallback/DashboardFallbackView";
+import { useDebounce } from "use-debounce";
+import { LoginInfo } from "../../types/users/user_type";
 
 export default function DashboardView({
-  username,
   today,
+  userInfo,
 }: {
-  username: string;
   today: Date;
+  userInfo: LoginInfo;
 }) {
-  const [selectedMonth, setSelectedMonth] = useState<Date>(today);
+  const [selectedDate, setSelectedDate] = useState<Date>(today);
+  const [isPending, setIsPending] = useState(false);
+  const [debouncedDate] = useDebounce(selectedDate, 1000);
 
-  const from = startOfMonth(selectedMonth).toISOString();
-  const to = endOfMonth(selectedMonth).toISOString();
+  const from = startOfMonth(debouncedDate).toISOString();
+  const to = endOfMonth(debouncedDate).toISOString();
 
-  const prevMonth = subMonths(selectedMonth, 1);
+  const prevMonth = subMonths(debouncedDate, 1);
   const prevFrom = startOfMonth(prevMonth).toISOString();
   const prevTo = endOfMonth(prevMonth).toISOString();
 
-  const { data: prevData } = useQuery({
-    queryKey: ["activity", username, prevFrom],
+  const {
+    data: prevData,
+    isLoading: prevLoading,
+    isFetching: prevFetching,
+  } = useQuery({
+    queryKey: ["activity", userInfo.username, prevFrom],
     queryFn: () =>
       fetchData({
-        username,
+        username: userInfo.username,
         from: prevFrom,
         to: prevTo,
+        token: userInfo.token,
       }),
     staleTime: 1000 * 60 * 5,
   });
 
-  const { data: currentData } = useQuery({
-    queryKey: ["activity", username, from],
+  const {
+    data: currentData,
+    isLoading: currentLoading,
+    isFetching: currentFetching,
+  } = useQuery({
+    queryKey: ["activity", userInfo.username, from],
     queryFn: () =>
       fetchData({
-        username,
+        username: userInfo.username,
         from,
         to,
+        token: userInfo.token,
       }),
+
     staleTime: 1000 * 60 * 5,
   });
 
+  useEffect(() => {
+    setSelectedDate(debouncedDate);
+  }, [debouncedDate]);
+
+  useEffect(() => {
+    if (!prevFetching && !currentFetching) setIsPending(false);
+  }, [prevData, currentData]);
+
   async function moveMonth(isPrev: boolean) {
+    setIsPending(true);
     if (isPrev) {
-      setSelectedMonth(subMonths(selectedMonth, 1));
+      setSelectedDate(startOfMonth(subMonths(selectedDate, 1)));
     } else {
-      setSelectedMonth(addMonths(selectedMonth, 1));
+      setSelectedDate(startOfMonth(addMonths(selectedDate, 1)));
     }
   }
 
@@ -76,7 +101,7 @@ export default function DashboardView({
             onClick={() => moveMonth(true)}
           />
           <div className="text-2xl font-bold text-fontNavy px-2">
-            {format(selectedMonth, "yyyy년 M월")}
+            {format(selectedDate, "yyyy년 M월")}
           </div>
           <FaCaretRight
             size={24}
@@ -84,41 +109,54 @@ export default function DashboardView({
             onClick={() => moveMonth(false)}
           />
         </div>
-        <div className="flex flex-row mb-4 gap-6">
-          <ActivityCount
-            count={currentData?.totalCount.commit ?? 0}
-            title="Commits"
-            Icon={FaCodeCommit}
-            beforeCount={prevData?.totalCount.commit ?? 0}
-          />
-          <ActivityCount
-            count={currentData?.totalCount.issue ?? 0}
-            title="Issues"
-            Icon={VscIssues}
-            beforeCount={prevData?.totalCount.issue ?? 0}
-          />
-          <ActivityCount
-            count={currentData?.totalCount.pr ?? 0}
-            title="PRs"
-            Icon={FaCodePullRequest}
-            beforeCount={prevData?.totalCount.pr ?? 0}
-          />
-          <ActivityCount
-            count={currentData?.totalCount.review ?? 0}
-            title="PR Reveiws"
-            Icon={VscCodeReview}
-            beforeCount={prevData?.totalCount.review ?? 0}
-          />
-        </div>
-        <div className="flex flex-row">
-          <div className="flex-4">
-            <Calendar data={currentData!.map} date={selectedMonth} />
-          </div>
-          <div className="flex-3"></div>
-        </div>
-        <div className="flex flex-col flex-1">
-          <div className="flex flex-row gap-4  pl-4"></div>
-        </div>
+
+        {prevLoading || currentLoading || isPending ? (
+          <DashboardFallbackView />
+        ) : (
+          <>
+            <div className="flex flex-row mb-4 gap-6">
+              <ActivityCount
+                count={currentData?.totalCount.commit ?? 0}
+                title="Commits"
+                Icon={FaCodeCommit}
+                beforeCount={prevData?.totalCount.commit ?? 0}
+              />
+              <ActivityCount
+                count={currentData?.totalCount.issue ?? 0}
+                title="Issues"
+                Icon={VscIssues}
+                beforeCount={prevData?.totalCount.issue ?? 0}
+              />
+              <ActivityCount
+                count={currentData?.totalCount.pr ?? 0}
+                title="PRs"
+                Icon={FaCodePullRequest}
+                beforeCount={prevData?.totalCount.pr ?? 0}
+              />
+              <ActivityCount
+                count={currentData?.totalCount.review ?? 0}
+                title="PR Reveiws"
+                Icon={VscCodeReview}
+                beforeCount={prevData?.totalCount.review ?? 0}
+              />
+            </div>
+
+            <div className="flex flex-row gap-4">
+              <div className="min-w-0 flex-1">
+                <Calendar
+                  data={currentData!.map}
+                  selectedDate={selectedDate}
+                  setSelectedDate={setSelectedDate}
+                />
+              </div>
+              <div className="flex-1"></div>
+            </div>
+
+            <div className="flex flex-col flex-1">
+              <div className="flex flex-row gap-4 pl-4"></div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

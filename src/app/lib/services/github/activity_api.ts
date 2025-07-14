@@ -3,22 +3,19 @@ import {
   ActivityType,
   DailyActivityMap,
   MergedActivity,
-} from "@/app/(main)/dashboard/types/activities";
-import { headers } from "next/headers";
+} from "@/app/types/activities/activity_type";
+import { ActivityReq } from "@/app/types/activities/activity_request";
 
 const GITHUB_API = "https://api.github.com";
 const GITHUB_API_GRAPH = "https://api.github.com/graphql";
-const HEADERS = {
-  Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
-  "Content-Type": "application/json",
-};
 
 //기간 중 활동한 레포지토리 목록 api
-export async function getContributedReposInRange(
-  username: string,
-  from: string,
-  to: string
-): Promise<{ owner: string; name: string }[]> {
+export async function getContributedReposInRange({
+  username,
+  from,
+  to,
+  token,
+}: ActivityReq): Promise<{ owner: string; name: string }[]> {
   const query = `
     query($username: String!, $from: DateTime!, $to: DateTime!) {
       user(login: $username) {
@@ -38,7 +35,10 @@ export async function getContributedReposInRange(
 
   const res = await fetch(GITHUB_API_GRAPH, {
     method: "POST",
-    headers: HEADERS,
+    headers: {
+      Authorization: `token ${token}`,
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({
       query,
       variables: { username, from, to },
@@ -75,12 +75,16 @@ export async function fetchCommitsForRepo(
   repo: string,
   username: string,
   since: string,
-  until: string
+  until: string,
+  token: string
 ): Promise<ActivityItem[]> {
   const url = `${GITHUB_API}/repos/${owner}/${repo}/commits?author=${username}&since=${since}&until=${until}&per_page=100`;
 
   const res = await fetch(url, {
-    headers: HEADERS,
+    headers: {
+      Authorization: `token ${token}`,
+      "Content-Type": "application/json",
+    },
   });
 
   const json = await res.json();
@@ -97,17 +101,25 @@ export async function fetchCommitsForRepo(
 }
 
 //기간 중 모든 커밋 내용 호출 api
-export async function getAllCommits(
-  username: string,
-  from: string,
-  to: string
-): Promise<DailyActivityMap> {
-  const repos = await getContributedReposInRange(username, from, to);
+export async function getAllCommits({
+  username,
+  from,
+  to,
+  token,
+}: ActivityReq): Promise<DailyActivityMap> {
+  const repos = await getContributedReposInRange({
+    username,
+    from,
+    to,
+    token: token,
+  });
+
+  console.log(repos);
   const result: DailyActivityMap = {};
 
   const results = await Promise.all(
     repos.map((repo) =>
-      fetchCommitsForRepo(repo.owner, repo.name, username, from, to)
+      fetchCommitsForRepo(repo.owner, repo.name, username, from, to, token)
     )
   );
 
@@ -124,11 +136,12 @@ export async function getAllCommits(
 }
 
 //기간동안 모든 pr, issues, review 호출 api
-export async function getActivities(
-  username: string,
-  from: string,
-  to: string
-): Promise<DailyActivityMap> {
+export async function getActivities({
+  username,
+  from,
+  to,
+  token,
+}: ActivityReq): Promise<DailyActivityMap> {
   const query = `
     query($username: String!, $queryString: String!, $from: DateTime!, $to: DateTime!) {
       search(query: $queryString, type: ISSUE, first: 100) {
@@ -195,7 +208,10 @@ export async function getActivities(
 
   const res = await fetch(GITHUB_API_GRAPH, {
     method: "POST",
-    headers: HEADERS,
+    headers: {
+      Authorization: `token ${token}`,
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({
       query,
       variables: {
@@ -259,14 +275,11 @@ export async function serverFetch({
   username,
   from,
   to,
-}: {
-  username: string;
-  from: string;
-  to: string;
-}): Promise<MergedActivity> {
+  token,
+}: ActivityReq): Promise<MergedActivity> {
   const [commitMap, activityMap] = await Promise.all([
-    getAllCommits(username, from, to),
-    getActivities(username, from, to),
+    getAllCommits({ username, from, to, token }),
+    getActivities({ username, from, to, token }),
   ]);
   const merged: DailyActivityMap = {};
   const totalCount: Record<ActivityType, number> = {
@@ -296,19 +309,11 @@ export async function serverFetch({
   };
 }
 
-export async function clientFetch({
-  username,
-  from,
-  to,
-}: {
-  username: string;
-  from: string;
-  to: string;
-}) {
-  const res = await fetch("/api/github", {
+export async function clientFetch({ username, from, to, token }: ActivityReq) {
+  const res = await fetch("/api/github/activity", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, from, to }),
+    body: JSON.stringify({ username, from, to, token }),
   });
 
   if (!res.ok) throw new Error("클라이언트 요청 실패");
@@ -319,17 +324,16 @@ export async function fetchData({
   username,
   from,
   to,
-}: {
-  username: string;
-  from: string;
-  to: string;
-}): Promise<MergedActivity> {
+  token,
+}: ActivityReq): Promise<MergedActivity> {
   // 서버 환경인지 감지
   const isServer = typeof window === "undefined";
 
+  console.log("loginInfo-------------->" + token);
+
   if (isServer) {
-    return serverFetch({ username, from, to });
+    return serverFetch({ username, from, to, token });
   } else {
-    return clientFetch({ username, from, to });
+    return clientFetch({ username, from, to, token });
   }
 }
