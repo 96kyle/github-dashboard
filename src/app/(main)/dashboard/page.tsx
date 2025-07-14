@@ -53,7 +53,7 @@ export default async function DashboardPage() {
 
   return (
     <div>
-      <div className="bg-bg p-4 text-2xl  border-b-2 border-gray-300 text-fontNavy flex flex-row justify-between">
+      <div className="bg-white p-4 text-2xl  border-b-2 border-gray-300 text-fontNavy flex flex-row justify-between">
         {userInfo.username}님의 Dashboard
         {userInfo.token === process.env.GITHUB_TOKEN ? (
           <LoginButton clientId={clientId!} />

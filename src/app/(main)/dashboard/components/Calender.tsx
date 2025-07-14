@@ -24,15 +24,15 @@ export default function Calendar({
 
     if (data[formatDate]) {
       if (data[formatDate].length >= 5) {
-        return "bg-green-700";
-      } else if (data[formatDate].length >= 4) {
-        return "bg-green-600";
-      } else if (data[formatDate].length >= 3) {
         return "bg-green-500";
-      } else if (data[formatDate].length >= 2) {
+      } else if (data[formatDate].length >= 4) {
         return "bg-green-400";
-      } else if (data[formatDate].length >= 1) {
+      } else if (data[formatDate].length >= 3) {
         return "bg-green-300";
+      } else if (data[formatDate].length >= 2) {
+        return "bg-green-200";
+      } else if (data[formatDate].length >= 1) {
+        return "bg-green-100";
       }
     } else {
       return "";
@@ -40,37 +40,54 @@ export default function Calendar({
   }
 
   return (
-    <div className="p-4 pt-6 border-0 rounded-lg bg-bg shadow h-full">
-      <div className="grid grid-cols-7 text-left">
-        {["일", "월", "화", "수", "목", "금", "토"].map((d) => (
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      {/* 요일 헤더 */}
+      <div className="grid grid-cols-7 gap-2 mb-4">
+        {["일", "월", "화", "수", "목", "금", "토"].map((day, index) => (
           <div
-            key={d}
-            className="font-bold text-gray-600 border-b-1 border-gray-300"
+            key={day}
+            className={`text-center text-sm font-medium py-2 ${
+              index === 0
+                ? "text-red-500"
+                : index === 6
+                ? "text-blue-500"
+                : "text-gray-600"
+            }`}
           >
-            {d}
+            {day}
           </div>
         ))}
+      </div>
 
-        {Array.from({ length: startDay }).map((_, idx) => (
-          <div key={`empty-${idx}`} className="" />
-        ))}
+      {/* 캘린더 그리드 */}
+      <div className="grid grid-cols-7 gap-2">
+        {monthDays.map((day, index) => {
+          if (day === null) {
+            return <div key={index} className="h-16"></div>;
+          }
 
-        {monthDays.map((date) => (
-          <div
-            key={date.toISOString()}
-            onClick={() => setSelectedDate(date)}
-            className={`text-black text-sm cursor-pointer aspect-square text-left p-1 flex justify-start bg-bg
-              ${
-                date?.toDateString() === selectedDate.toDateString()
-                  ? `shadow-[0_0_8px_8px_rgba(0,0,0,0.3)] font-bold z-10  ${returnColor(
-                      date
-                    )}`
-                  : `hover:bg-blue-100 ${returnColor(date)}`
-              }`}
-          >
-            <div className="px-1">{date.getDate()}</div>
-          </div>
-        ))}
+          const isSelected = day.toDateString() === selectedDate.toDateString();
+
+          return (
+            <button
+              key={index}
+              onClick={() => setSelectedDate(day)}
+              className={`
+                          h-16 rounded-lg border-2 transition-all duration-200 text-lg font-medium flex items-center justify-center cursor-pointer
+                          ${
+                            isSelected
+                              ? "border-blue-500 bg-blue-50 text-blue-700 ring-2 ring-blue-200"
+                              : "border-transparent"
+                          }
+                          
+                          ${returnColor(day)}
+                          
+                        `}
+            >
+              {day.getDate()}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

@@ -13,7 +13,7 @@ export default function DashboardFallbackView() {
         ].map(({ title, Icon }) => (
           <div
             key={title}
-            className="min-w-0 flex-1 bg-bg p-4 rounded-lg shadow animate-pulse"
+            className="min-w-0 flex-1 bg-white p-4 rounded-lg shadow animate-pulse"
           >
             <div className="flex flex-row items-center mb-2">
               <Icon className="text-fontGrey" size={20} />

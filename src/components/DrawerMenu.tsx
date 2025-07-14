@@ -23,9 +23,9 @@ const DrawerMenu = () => {
   ];
 
   return (
-    <div className="w-[300px] bg-[#f4f5ff] text-fontNavy py-2 px-4 border-r-2 border-gray-300">
+    <div className="w-[330px] bg-[#f4f5ff] text-fontNavy py-2 px-4 border-r-2 border-gray-300">
       <div className="flex flex-row items-center">
-        <FaGithub size={24} color="black" className="mr-1" />
+        <FaGithub size={32} color="black" className="mr-2" />
         <div className="text-2xl font-bold py-2">Github Dashboard</div>
       </div>
       <ul className="py-6">

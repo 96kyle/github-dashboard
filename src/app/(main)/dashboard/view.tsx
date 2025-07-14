@@ -150,12 +150,12 @@ export default function DashboardView({
                   setSelectedDate={setSelectedDate}
                 />
               </div>
-              <div className="flex-1">
+              {/* <div className="flex-1">
                 <ActivityHistory
                   date={selectedDate}
                   items={currentData?.map ?? {}}
                 />
-              </div>
+              </div> */}
             </div>
 
             <div className="flex flex-col flex-1">

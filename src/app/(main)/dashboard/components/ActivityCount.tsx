@@ -12,7 +12,7 @@ export default function ActivityCount({
   beforeCount: number;
 }) {
   return (
-    <div className="min-w-0 flex-1 bg-bg p-4 rounded-lg shadow">
+    <div className="min-w-0 flex-1 bg-white p-4 rounded-lg shadow">
       <div className="flex flex-row items-center mb-2">
         <Icon className="text-fontGrey" size={20} />
         <p className="ml-2 text-fontGrey text-lg">{title}</p>
