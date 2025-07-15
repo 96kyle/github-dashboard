@@ -23,13 +23,19 @@ import {
   GitPullRequest,
   MessageSquare,
 } from "lucide-react";
+import { LoginButton } from "@/components/LoginButton";
+import { LogoutButton } from "@/components/LogoutButton";
 
 export default function DashboardView({
   today,
   userInfo,
+  clientId,
+  isLogin,
 }: {
   today: Date;
   userInfo: LoginInfo;
+  clientId: string;
+  isLogin: boolean;
 }) {
   const [selectedDate, setSelectedDate] = useState<Date>(today);
   const [isPending, setIsPending] = useState(false);
@@ -81,7 +87,7 @@ export default function DashboardView({
 
   useEffect(() => {
     if (!prevFetching && !currentFetching) setIsPending(false);
-  }, [prevData, currentData]);
+  }, [prevData, currentData, prevFetching, currentFetching]);
 
   async function moveMonth(isPrev: boolean) {
     setIsPending(true);
@@ -94,6 +100,12 @@ export default function DashboardView({
 
   return (
     <div>
+      <div className="bg-white p-4 text-xl  border-b-2 border-gray-300 text-fontNavy flex flex-row justify-between ">
+        <div className="self-center">
+          <span className="font-semibold">{userInfo.username}</span>'s Dashboard
+        </div>
+        {!isLogin ? <LoginButton clientId={clientId!} /> : <LogoutButton />}
+      </div>
       <div className="w-full p-6">
         <div className="flex flex-row items-center justify-center mb-4">
           <FaCaretLeft

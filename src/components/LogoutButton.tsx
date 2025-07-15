@@ -13,8 +13,9 @@ export function LogoutButton() {
   return (
     <button
       onClick={logout}
-      className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+      className="flex items-center gap-1 border px-4 py-2 rounded-md bg-black hover:bg-gray-800 text-white text-sm cursor-pointer"
     >
+      <img src="/icons/github.svg" alt="GitHub" width={24} height={24} />
       로그아웃
     </button>
   );

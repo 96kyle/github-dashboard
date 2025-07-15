@@ -13,19 +13,19 @@ const DrawerMenu = () => {
     {
       name: "Dashboard",
       path: "/dashboard",
-      icon: <FaChartSimple size={20} />,
+      icon: <FaChartSimple size={28} />,
     },
     {
       name: "Challenge",
       path: "/challenge",
-      icon: <FaFireFlameSimple size={20} />,
+      icon: <FaFireFlameSimple size={28} />,
     },
   ];
 
   return (
-    <div className="w-[330px] bg-[#f4f5ff] text-fontNavy py-2 px-4 border-r-2 border-gray-300">
+    <div className="w-[340px] bg-[#f4f5ff] text-fontNavy py-4 px-4 border-r-2 border-gray-300">
       <div className="flex flex-row items-center">
-        <FaGithub size={32} color="black" className="mr-2" />
+        <FaGithub size={50} color="black" className="mr-3" />
         <div className="text-2xl font-bold py-2">Github Dashboard</div>
       </div>
       <ul className="py-6">
@@ -39,7 +39,7 @@ const DrawerMenu = () => {
                   : "hover:bg-gray-200 font-semibold text-fontGrey"
               }`}
             >
-              <div className="flex flex-row items-center gap-2">
+              <div className="flex flex-row items-center gap-2 text-xl">
                 {item.icon}
                 {item.name}
               </div>

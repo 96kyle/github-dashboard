@@ -6,10 +6,9 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import { endOfMonth, startOfMonth, subMonths } from "date-fns";
-import { LoginButton } from "@/components/LoginButton";
 import { getLoginInfo } from "@/app/lib/services/users/user_api";
 import { LoginInfo } from "../../types/users/user_type";
-import { LogoutButton } from "@/components/LogoutButton";
+import { cookies } from "next/headers";
 
 export default async function DashboardPage() {
   const userInfo: LoginInfo = (await getLoginInfo()) ?? {
@@ -51,19 +50,20 @@ export default async function DashboardPage() {
       }),
   });
 
+  const cookieStore = await cookies();
+  const token = cookieStore.get("github_token")?.value;
+
+  const isLogin = Boolean(token); // 로그인 여부 판단
+
   return (
     <div>
-      <div className="bg-white p-4 text-2xl  border-b-2 border-gray-300 text-fontNavy flex flex-row justify-between">
-        {userInfo.username}님의 Dashboard
-        {userInfo.token === process.env.GITHUB_TOKEN ? (
-          <LoginButton clientId={clientId!} />
-        ) : (
-          <LogoutButton />
-        )}
-      </div>
-
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <DashboardView today={today} userInfo={userInfo} />
+        <DashboardView
+          today={today}
+          userInfo={userInfo}
+          clientId={clientId ?? ""}
+          isLogin={isLogin}
+        />
       </HydrationBoundary>
     </div>
   );
