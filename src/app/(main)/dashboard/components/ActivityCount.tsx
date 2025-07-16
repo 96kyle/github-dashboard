@@ -31,15 +31,8 @@ export default function ActivityCount({
         <span className="font-medium">{title}</span>
         <br />
         <p className="text-fontGrey text-sm">
-          지난 달보다{" "}
-          <span
-            className={`${
-              beforeCount > count ? "text-blue-500" : "text-red-500"
-            } font-bold`}
-          >
-            {Math.abs(count - beforeCount)}
-          </span>
-          회 {beforeCount > count ? "감소했습니다." : "증가했습니다."}
+          지난 달보다 {Math.abs(count - beforeCount)}회
+          {beforeCount > count ? "감소했습니다." : "증가했습니다."}
         </p>
       </div>
     </div>

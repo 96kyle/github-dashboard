@@ -2,15 +2,8 @@
 
 import { fetchData } from "@/app/lib/services/github/activity_api";
 import Calendar from "@/app/(main)/dashboard/components/Calender";
-import {
-  addMonths,
-  endOfMonth,
-  format,
-  startOfMonth,
-  subMonths,
-} from "date-fns";
+import { addMonths, endOfMonth, startOfMonth, subMonths } from "date-fns";
 import ActivityCount from "./components/ActivityCount";
-import { FaCaretLeft, FaCaretRight } from "react-icons/fa6";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import DashboardFallbackView from "./fallback/DashboardFallbackView";
@@ -23,8 +16,8 @@ import {
   GitPullRequest,
   MessageSquare,
 } from "lucide-react";
-import { LoginButton } from "@/components/LoginButton";
-import { LogoutButton } from "@/components/LogoutButton";
+import ActivityHeader from "./components/ActivityHeader";
+import ActivityChart from "./components/ActivityChart";
 
 export default function DashboardView({
   today,
@@ -81,6 +74,8 @@ export default function DashboardView({
     staleTime: 1000 * 60 * 5,
   });
 
+  console.log(currentData);
+
   useEffect(() => {
     setSelectedDate(debouncedDate);
   }, [debouncedDate]);
@@ -100,29 +95,14 @@ export default function DashboardView({
 
   return (
     <div>
-      <div className="bg-white p-4 text-xl  border-b-2 border-gray-300 text-fontNavy flex flex-row justify-between ">
-        <div className="self-center">
-          <span className="font-semibold">{userInfo.username}</span>'s Dashboard
-        </div>
-        {!isLogin ? <LoginButton clientId={clientId!} /> : <LogoutButton />}
-      </div>
+      <ActivityHeader
+        username={userInfo.username}
+        clientId={clientId}
+        isLogin={isLogin}
+        moveMonth={moveMonth}
+        selectedDate={selectedDate}
+      />
       <div className="w-full p-6">
-        <div className="flex flex-row items-center justify-center mb-4">
-          <FaCaretLeft
-            size={24}
-            className="cursor-pointer"
-            onClick={() => moveMonth(true)}
-          />
-          <div className="text-2xl font-bold text-fontNavy px-2">
-            {format(selectedDate, "yyyy년 M월")}
-          </div>
-          <FaCaretRight
-            size={24}
-            className="cursor-pointer"
-            onClick={() => moveMonth(false)}
-          />
-        </div>
-
         {prevLoading || currentLoading || isPending ? (
           <DashboardFallbackView />
         ) : (
@@ -173,6 +153,20 @@ export default function DashboardView({
               items={currentData?.map ?? {}}
               selectedDate={selectedDate}
             />
+            <div className="flex flex-row gap-6 mt-4">
+              <ActivityChart
+                selectedDate={selectedDate}
+                count={
+                  (currentData?.totalCount.commit ?? 0) +
+                  (currentData?.totalCount.pr ?? 0) +
+                  (currentData?.totalCount.issue ?? 0) +
+                  (currentData?.totalCount.review ?? 0)
+                }
+                prevMap={prevData?.map ?? {}}
+                currentMap={currentData?.map ?? {}}
+              />
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex-1"></div>
+            </div>
           </>
         )}
       </div>
