@@ -253,11 +253,19 @@ export async function getActivities({
   const result: DailyActivityMap = {};
 
   json.data.search.nodes.forEach((node: any) => {
-    const date = node.createdAt.split("T")[0];
+    const korDate = new Date(node.createdAt);
+    const searchDate = new Date(from);
+
+    const date = `${korDate.getFullYear()}-${(korDate.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}-${korDate.getDate().toString().padStart(2, "0")}`;
     const type = node.url.includes("/pull/") ? "pr" : "issue";
     const repo = `${node.repository.owner.login}/${node.repository.name}`;
 
-    if (node.author.login === username) {
+    if (
+      node.author.login === username &&
+      korDate.getMonth() === searchDate.getMonth()
+    ) {
       if (!result[date]) result[date] = [];
 
       result[date].push({
@@ -274,18 +282,26 @@ export async function getActivities({
   const reviews =
     json.data.user.contributionsCollection.pullRequestReviewContributions.nodes;
   reviews.forEach((review: any) => {
-    const date = review.occurredAt.split("T")[0];
+    const korDate = new Date(review.occurredAt);
+    const searchDate = new Date(from);
+
+    const date = `${korDate.getFullYear()}-${(korDate.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}-${korDate.getDate().toString().padStart(2, "0")}`;
+
     const repo = `${review.pullRequest.repository.owner.login}/${review.pullRequest.repository.name}`;
 
-    if (!result[date]) result[date] = [];
-    result[date].push({
-      title: review.pullRequest.title,
-      url: review.pullRequest.url,
-      createdAt: review.occurredAt,
-      type: "review",
-      state: review.pullRequest.state,
-      repo,
-    });
+    if (korDate.getMonth() === searchDate.getMonth()) {
+      if (!result[date]) result[date] = [];
+      result[date].push({
+        title: review.pullRequest.title,
+        url: review.pullRequest.url,
+        createdAt: review.occurredAt,
+        type: "review",
+        state: review.pullRequest.state,
+        repo,
+      });
+    }
   });
 
   return result;

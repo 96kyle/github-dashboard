@@ -39,28 +39,33 @@ export default function ActivityChart({
     let prevSum = 0;
     let currSum = 0;
 
-    return Array.from({ length: maxDay }, (_, i) => i + 1).map((day) => {
-      const dayStr = day.toString().padStart(2, "0");
+    const data: { day: string; prev: number; current: number | undefined }[] =
+      Array.from({ length: maxDay }, (_, i) => i + 1).map((day) => {
+        const dayStr = day.toString().padStart(2, "0");
 
-      const prevKey = Object.keys(prevMap).find((d) =>
-        d.endsWith(`-${dayStr}`)
-      );
-      const currKey = Object.keys(currentMap).find((d) =>
-        d.endsWith(`-${dayStr}`)
-      );
+        const prevKey = Object.keys(prevMap).find((d) =>
+          d.endsWith(`-${dayStr}`)
+        );
+        const currKey = Object.keys(currentMap).find((d) =>
+          d.endsWith(`-${dayStr}`)
+        );
 
-      const prevCount = prevKey ? prevMap[prevKey].length : 0;
-      const currCount = currKey ? currentMap[currKey].length : 0;
+        const prevCount = prevKey ? prevMap[prevKey].length : 0;
+        const currCount = currKey ? currentMap[currKey].length : 0;
 
-      prevSum += prevCount;
-      currSum += currCount;
+        prevSum += prevCount;
+        currSum += currCount;
 
-      return {
-        day: `${day}일`,
-        prev: prevSum,
-        current: day <= currentMonthDayLimit ? currSum : undefined,
-      };
-    });
+        return {
+          day: `${day}일`,
+          prev: prevSum,
+          current: day <= currentMonthDayLimit ? currSum : undefined,
+        };
+      });
+
+    const defaultData = { day: "0일", prev: 0, current: 0 };
+
+    return [defaultData, ...data];
   }
 
   const data = buildChartData(prevMap, currentMap);
@@ -100,7 +105,7 @@ export default function ActivityChart({
               connectNulls
             />
             <ReferenceDot
-              x={lastOffset.x - 1}
+              x={lastOffset.x}
               y={lastOffset.y}
               r={6}
               fill="#FAC699"
