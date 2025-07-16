@@ -3,7 +3,7 @@
 import { format, startOfMonth, endOfMonth, eachDayOfInterval } from "date-fns";
 import { DailyActivityMap } from "@/app/types/activities/activity_type";
 
-export default function Calendar({
+export default function ActivityCalendar({
   data,
   count,
   selectedDate,
@@ -20,7 +20,7 @@ export default function Calendar({
 
   const startDay = start.getDay();
 
-  function returnColor(clickDate: Date) {
+  const returnColor = (clickDate: Date) => {
     const formatDate: string = format(clickDate, "yyyy-MM-dd");
 
     if (data[formatDate]) {
@@ -38,7 +38,7 @@ export default function Calendar({
     } else {
       return "";
     }
-  }
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">

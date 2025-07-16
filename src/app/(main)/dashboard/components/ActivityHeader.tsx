@@ -17,7 +17,7 @@ export default function ActivityHeader({
   clientId: string;
 }) {
   return (
-    <div className="bg-white p-4 text-xl  border-b-2 border-gray-300 text-fontNavy flex flex-row justify-between items-center">
+    <div className="w-full bg-white p-4 text-xl  border-b-2 border-gray-300 text-fontNavy flex flex-row justify-between items-center">
       <div>
         <span className="font-semibold">{username}</span>'s Dashboard
       </div>
