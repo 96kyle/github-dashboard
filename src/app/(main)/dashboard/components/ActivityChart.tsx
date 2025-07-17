@@ -2,6 +2,7 @@ import {
   DailyActivityMap,
   MergedActivity,
 } from "@/app/types/activities/activity_type";
+import { subMonths } from "date-fns";
 import { el } from "date-fns/locale";
 import {
   AreaChart,
@@ -103,6 +104,36 @@ export default function ActivityChart({
 
   const data = buildChartData(prevActivity.map, currentActivity.map);
 
+  const diff = currentCount - countPrevMonth();
+
+  const titleCommnet = (): string => {
+    if (
+      selectedDate.getMonth() === today.getMonth() &&
+      selectedDate.getFullYear() === today.getFullYear()
+    ) {
+      if (diff > 0) {
+        return `지난달 ${subMonths(today, 1).getDate()}일 보다 ${Math.abs(
+          diff
+        )}번의 많은 활동을 했어요`;
+      } else if (diff < 0) {
+        return `지난달에 비해 ${subMonths(
+          today,
+          1
+        ).getDate()}일 보다 ${Math.abs(diff)}번의 적은 활동을 했어요`;
+      } else {
+        return `지난달과 동일한 활동을 했어요`;
+      }
+    } else {
+      if (diff > 0) {
+        return `지난달보다 ${Math.abs(diff)}번의 많은 활동을 했어요`;
+      } else if (diff < 0) {
+        return `지난달에 비해 ${Math.abs(diff)}번의 적은 활동을 했어요`;
+      } else {
+        return `지난달과 동일한 활동을 했어요`;
+      }
+    }
+  };
+
   return (
     <div className=" rounded-xl shadow-sm border border-gray-200 p-4  bg-white flex flex-col flex-1">
       <div className="font-semibold text-xl ">
@@ -110,29 +141,21 @@ export default function ActivityChart({
           ? "지난달보다 페이스가 좋아요!"
           : "지난달보다 페이스가 아쉬워요.."}
       </div>
-      <div className="font-medium text-lg mt-1">
-        {currentCount - countPrevMonth() >= 0
-          ? `지난달 이맘때쯤 보다 ${Math.abs(
-              currentCount - countPrevMonth()
-            )}번 더 많은 활동을 했어요!`
-          : `지난달에 이맘때쯤 보다 ${Math.abs(
-              currentCount - countPrevMonth()
-            )}번 더 적은 활동을 했어요..`}
-      </div>
+      <div className="font-medium text-lg mt-1">{titleCommnet()}</div>
       <div className="border-l-1 border-b-1 flex-1 min-w-0 border-gray-300 aspect-[5/3] mt-2">
         {shouldRenderChart ? (
           <ResponsiveContainer width="100%" aspect={5 / 3}>
             <AreaChart data={data}>
               <defs>
                 <linearGradient id="colorPrev" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#c7d2fe" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="#c7d2fe" stopOpacity={0} />
+                  <stop offset="10%" stopColor="#e5e7eb" stopOpacity={0.8} />
+                  <stop offset="90%" stopColor="#e5e7eb" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <Area
                 type="monotone"
                 dataKey="prev"
-                stroke="#6366f1"
+                stroke="#d1d5db"
                 fillOpacity={1}
                 fill="url(#colorPrev)"
                 activeDot={false}
@@ -143,7 +166,7 @@ export default function ActivityChart({
               <Line
                 type="monotone"
                 dataKey="current"
-                stroke="#FAC699"
+                stroke="#6366f1"
                 strokeWidth={3}
                 dot={false}
                 activeDot={false}
@@ -156,7 +179,7 @@ export default function ActivityChart({
                 x={lastOffset.x}
                 y={lastOffset.y}
                 r={6}
-                fill="#FAC699"
+                fill="#6366f1"
                 stroke="white"
                 strokeWidth={2}
                 style={{
@@ -171,9 +194,9 @@ export default function ActivityChart({
       </div>
       <div className="flex flex-row justify-center items-center gap-2 pt-4">
         <div className="w-8 h-1 bg-[#6366F1] "></div>
-        <div>{selectedDate.getMonth()}월</div>
-        <div className="w-8 h-1 bg-[#FAC699] "></div>
         <div>{selectedDate.getMonth() + 1}월</div>
+        <div className="w-8 h-1 bg-[#d1d5db] "></div>
+        <div>{selectedDate.getMonth()}월</div>
       </div>
     </div>
   );
