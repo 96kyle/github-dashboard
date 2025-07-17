@@ -5,6 +5,7 @@ import {
   MergedActivity,
 } from "@/app/types/activities/activity_type";
 import { ActivityReq } from "@/app/types/activities/activity_request";
+import { getGitHubContext } from "../auth/github_auth";
 
 const GITHUB_API = "https://api.github.com";
 const GITHUB_API_GRAPH = "https://api.github.com/graphql";
@@ -308,11 +309,14 @@ export const getActivities = async ({
 };
 
 export const serverFetch = async ({
-  username,
   from,
   to,
-  token,
-}: ActivityReq): Promise<MergedActivity> => {
+}: {
+  from: string;
+  to: string;
+}): Promise<MergedActivity> => {
+  const { username, token } = await getGitHubContext();
+
   const [commitMap, activityMap] = await Promise.all([
     getAllCommits({ username, from, to, token }),
     getActivities({ username, from, to, token }),
@@ -346,15 +350,16 @@ export const serverFetch = async ({
 };
 
 export const clientFetch = async ({
-  username,
   from,
   to,
-  token,
-}: ActivityReq) => {
+}: {
+  from: string;
+  to: string;
+}) => {
   const res = await fetch("/api/github/activity", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, from, to, token }),
+    body: JSON.stringify({ from, to }),
   });
 
   if (!res.ok) throw new Error("클라이언트 요청 실패");
@@ -362,17 +367,18 @@ export const clientFetch = async ({
 };
 
 export const fetchData = async ({
-  username,
   from,
   to,
-  token,
-}: ActivityReq): Promise<MergedActivity> => {
+}: {
+  from: string;
+  to: string;
+}): Promise<MergedActivity> => {
   // 서버 환경인지 감지
   const isServer = typeof window === "undefined";
 
   if (isServer) {
-    return serverFetch({ username, from, to, token });
+    return serverFetch({ from, to });
   } else {
-    return clientFetch({ username, from, to, token });
+    return clientFetch({ from, to });
   }
 };

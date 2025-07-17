@@ -1,6 +1,6 @@
 "use client";
 
-import { fetchData } from "@/app/lib/services/github/activity_api";
+import { fetchData } from "@/lib/api/activity_api";
 import ActivityCalendar from "@/app/(main)/dashboard/components/ActivityCalender";
 import { addMonths, endOfMonth, startOfMonth, subMonths } from "date-fns";
 import ActivityCount from "./components/ActivityCount";
@@ -20,18 +20,8 @@ import ActivityHeader from "./components/ActivityHeader";
 import ActivityChart from "./components/ActivityChart";
 import { useInView } from "react-intersection-observer";
 
-export default function DashboardView({
-  today,
-  userInfo,
-  clientId,
-  isLogin,
-}: {
-  today: Date;
-  userInfo: LoginInfo;
-  clientId: string;
-  isLogin: boolean;
-}) {
-  const [selectedDate, setSelectedDate] = useState<Date>(today);
+export default function DashboardView({ userInfo }: { userInfo: LoginInfo }) {
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [isPending, setIsPending] = useState(false);
   const [debouncedDate] = useDebounce(selectedDate, 1000);
 
@@ -53,10 +43,8 @@ export default function DashboardView({
     queryKey: ["activity", userInfo.username, prevFrom],
     queryFn: () =>
       fetchData({
-        username: userInfo.username,
         from: prevFrom,
         to: prevTo,
-        token: userInfo.token,
       }),
     staleTime: 1000 * 60 * 5,
   });
@@ -69,10 +57,8 @@ export default function DashboardView({
     queryKey: ["activity", userInfo.username, from],
     queryFn: () =>
       fetchData({
-        username: userInfo.username,
         from,
         to,
-        token: userInfo.token,
       }),
 
     staleTime: 1000 * 60 * 5,
@@ -106,8 +92,6 @@ export default function DashboardView({
     <div className="flex flex-col items-center">
       <ActivityHeader
         username={userInfo.username}
-        clientId={clientId}
-        isLogin={isLogin}
         moveMonth={moveMonth}
         selectedDate={selectedDate}
       />

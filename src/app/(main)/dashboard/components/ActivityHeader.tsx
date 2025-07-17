@@ -2,20 +2,19 @@ import { LoginButton } from "@/components/LoginButton";
 import { LogoutButton } from "@/components/LogoutButton";
 import { format } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 export default function ActivityHeader({
   username,
   moveMonth,
   selectedDate,
-  isLogin,
-  clientId,
 }: {
   username: string;
   moveMonth: (isPrev: boolean) => Promise<void>;
   selectedDate: Date;
-  isLogin: boolean;
-  clientId: string;
 }) {
+  const { data: session, status } = useSession();
+
   return (
     <div className="w-full bg-white p-4 text-xl  border-b-2 border-gray-300 text-fontNavy flex flex-row justify-between items-center">
       <div>
@@ -36,7 +35,7 @@ export default function ActivityHeader({
           onClick={() => moveMonth(false)}
         />
       </div>
-      {!isLogin ? <LoginButton clientId={clientId} /> : <LogoutButton />}
+      {!session ? <LoginButton /> : <LogoutButton />}
     </div>
   );
 }
