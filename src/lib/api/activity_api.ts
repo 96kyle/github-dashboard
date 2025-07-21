@@ -3,9 +3,9 @@ import {
   ActivityType,
   CommitContributionEntry,
   DailyActivityMap,
-  GithubIssueOrPRNode,
+  // GithubIssueOrPRNode,
   MergedActivity,
-  PullRequestReviewContributionNode,
+  // PullRequestReviewContributionNode,
 } from "@/app/types/activities/activity_type";
 import { ActivityReq } from "@/app/types/activities/activity_request";
 import { getGitHubContext } from "../auth/github_auth";
