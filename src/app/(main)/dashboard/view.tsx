@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import ActivityHeader from "./components/ActivityHeader";
 // import ActivityLineChart from "./components/ActivityLineChart";
-import { useInView } from "react-intersection-observer";
+// import { useInView } from "react-intersection-observer";
 // import ActivityBarChart from "./components/ActivityBarChart";
 import { MergedActivity } from "@/app/types/activities/activity_type";
 
@@ -34,8 +34,8 @@ export default function DashboardView({ userInfo }: { userInfo: LoginInfo }) {
   const prevFrom = startOfMonth(prevMonth).toISOString();
   const prevTo = endOfMonth(prevMonth).toISOString();
 
-  const { ref, inView } = useInView({ threshold: 0.1 });
-  const [shouldRenderChart, setShouldRenderChart] = useState(false);
+  // const {  inView } = useInView({ threshold: 0.1 });
+  // const [shouldRenderChart, setShouldRenderChart] = useState(false);
 
   const {
     data: prevData,
@@ -74,15 +74,15 @@ export default function DashboardView({ userInfo }: { userInfo: LoginInfo }) {
     if (!prevFetching && !currentFetching) setIsPending(false);
   }, [prevData, currentData, prevFetching, currentFetching]);
 
-  useEffect(() => {
-    if (inView) {
-      setShouldRenderChart(true); // 한 번만 렌더링
-    }
-  }, [inView]);
+  // useEffect(() => {
+  //   if (inView) {
+  //     setShouldRenderChart(true); // 한 번만 렌더링
+  //   }
+  // }, [inView]);
 
   const moveMonth = async (isPrev: boolean) => {
     setIsPending(true);
-    setShouldRenderChart(false);
+    // setShouldRenderChart(false);
     if (isPrev) {
       setSelectedDate(startOfMonth(subMonths(selectedDate, 1)));
     } else {
