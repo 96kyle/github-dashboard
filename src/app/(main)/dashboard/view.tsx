@@ -17,8 +17,9 @@ import {
   MessageSquare,
 } from "lucide-react";
 import ActivityHeader from "./components/ActivityHeader";
-import ActivityChart from "./components/ActivityChart";
+import ActivityLineChart from "./components/ActivityLineChart";
 import { useInView } from "react-intersection-observer";
+import ActivityBarChart from "./components/ActivityBarChart";
 
 export default function DashboardView({ userInfo }: { userInfo: LoginInfo }) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -147,13 +148,18 @@ export default function DashboardView({ userInfo }: { userInfo: LoginInfo }) {
               selectedDate={selectedDate}
             />
             <div ref={ref} className="flex flex-row gap-6 mt-4">
-              <ActivityChart
+              <ActivityLineChart
                 selectedDate={selectedDate}
                 prevActivity={prevData!}
                 currentActivity={currentData!}
                 shouldRenderChart={shouldRenderChart}
               />
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex-1"></div>
+              <ActivityBarChart
+                prevActivity={prevData?.map ?? {}}
+                currActivity={currentData?.map ?? {}}
+                selectedDate={selectedDate}
+                shouldRenderChart={shouldRenderChart}
+              />
             </div>
           </>
         )}
