@@ -4,7 +4,7 @@ import { fetchData } from "@/lib/api/activity_api";
 import ActivityCalendar from "@/app/(main)/dashboard/components/ActivityCalender";
 import { addMonths, endOfMonth, startOfMonth, subMonths } from "date-fns";
 import ActivityCount from "./components/ActivityCount";
-import { dehydrate, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import DashboardFallbackView from "./fallback/DashboardFallbackView";
 import { useDebounce } from "use-debounce";
