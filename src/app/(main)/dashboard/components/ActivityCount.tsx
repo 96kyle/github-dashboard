@@ -21,7 +21,12 @@ export default function ActivityCount({
         </div>
         <div className="text-right">
           <div className="text-2xl font-bold text-gray-900">{count}회</div>
-          <div className={`text-xs ${iconColor}`}>
+
+          <div
+            className={`text-xs ${
+              beforeCount === count ? "text-white" : iconColor
+            }`}
+          >
             {beforeCount > count ? "▼ " : "▲ "}
             {Math.abs(count - beforeCount)}회
           </div>
@@ -31,8 +36,10 @@ export default function ActivityCount({
         <span className="font-medium">{title}</span>
         <br />
         <p className="text-fontGrey text-sm">
-          지난 달보다 {Math.abs(count - beforeCount)}회
-          {beforeCount > count ? "감소했습니다." : "증가했습니다."}
+          {beforeCount === count
+            ? "지난 달과 동일합니다"
+            : `지난 달보다 ${Math.abs(count - beforeCount)}회
+          ${beforeCount > count ? "감소했습니다." : "증가했습니다."} `}
         </p>
       </div>
     </div>
