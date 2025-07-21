@@ -13,7 +13,7 @@ export default function ActivityHeader({
   moveMonth: (isPrev: boolean) => Promise<void>;
   selectedDate: Date;
 }) {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
   return (
     <div className="w-full bg-white p-4 text-xl  border-b-2 border-gray-300 text-fontNavy flex flex-row justify-between items-center sticky top-0 z-50 ">

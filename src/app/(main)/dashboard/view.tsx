@@ -20,6 +20,7 @@ import ActivityHeader from "./components/ActivityHeader";
 import ActivityLineChart from "./components/ActivityLineChart";
 import { useInView } from "react-intersection-observer";
 import ActivityBarChart from "./components/ActivityBarChart";
+import { MergedActivity } from "@/app/types/activities/activity_type";
 
 export default function DashboardView({ userInfo }: { userInfo: LoginInfo }) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -40,7 +41,7 @@ export default function DashboardView({ userInfo }: { userInfo: LoginInfo }) {
     data: prevData,
     isLoading: prevLoading,
     isFetching: prevFetching,
-  } = useQuery({
+  } = useQuery<MergedActivity>({
     queryKey: ["activity", userInfo.username, prevFrom],
     queryFn: () =>
       fetchData({
@@ -54,7 +55,7 @@ export default function DashboardView({ userInfo }: { userInfo: LoginInfo }) {
     data: currentData,
     isLoading: currentLoading,
     isFetching: currentFetching,
-  } = useQuery({
+  } = useQuery<MergedActivity>({
     queryKey: ["activity", userInfo.username, from],
     queryFn: () =>
       fetchData({

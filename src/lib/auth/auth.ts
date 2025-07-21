@@ -1,5 +1,5 @@
 // lib/auth.ts
-import GitHubProvider from "next-auth/providers/github";
+import GitHubProvider, { GithubProfile } from "next-auth/providers/github";
 import type { NextAuthOptions } from "next-auth";
 
 export const authOptions: NextAuthOptions = {
@@ -19,7 +19,7 @@ export const authOptions: NextAuthOptions = {
       // 로그인 시점에만 account에 access_token이 있음
       if (account) {
         token.accessToken = account.access_token;
-        token.username = (profile as any)?.login;
+        token.username = (profile as GithubProfile)?.login;
         console.log(token.username);
       }
       return token;

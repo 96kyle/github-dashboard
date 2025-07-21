@@ -9,6 +9,7 @@ import { endOfMonth, startOfMonth, subMonths } from "date-fns";
 import { getGitHubContext } from "@/lib/auth/github_auth";
 import { LoginInfo } from "@/app/types/users/user_type";
 import { Metadata } from "next";
+import { MergedActivity } from "@/app/types/activities/activity_type";
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
@@ -37,7 +38,7 @@ export default async function DashboardPage() {
 
   const userInfo: LoginInfo = await getGitHubContext();
 
-  await queryClient.prefetchQuery({
+  await queryClient.prefetchQuery<MergedActivity>({
     queryKey: ["activity", userInfo.username, prevFrom],
     queryFn: () =>
       fetchData({
@@ -46,7 +47,7 @@ export default async function DashboardPage() {
       }),
   });
 
-  await queryClient.prefetchQuery({
+  await queryClient.prefetchQuery<MergedActivity>({
     queryKey: ["activity", userInfo.username, from],
     queryFn: () =>
       fetchData({
