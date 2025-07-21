@@ -12,18 +12,19 @@ import {
 } from "recharts";
 
 export default function ActivityChart({
+  today,
   selectedDate,
   prevActivity,
   currentActivity,
   shouldRenderChart,
 }: {
+  today: Date;
   selectedDate: Date;
   prevActivity: MergedActivity;
   currentActivity: MergedActivity;
   shouldRenderChart: boolean;
 }) {
   const maxDay = 31;
-  const today = new Date();
   const currentMonthDayLimit =
     selectedDate.getMonth() === today.getMonth() &&
     selectedDate.getFullYear() === today.getFullYear()

@@ -156,12 +156,14 @@ export default function DashboardView({
             />
             <div ref={ref} className="flex flex-row gap-6 mt-4">
               <ActivityLineChart
+                today={new Date(date)}
                 selectedDate={selectedDate}
                 prevActivity={prevData!}
                 currentActivity={currentData!}
                 shouldRenderChart={shouldRenderChart}
               />
               <ActivityBarChart
+                today={new Date(date)}
                 prevActivity={prevData?.map ?? {}}
                 currActivity={currentData?.map ?? {}}
                 selectedDate={selectedDate}

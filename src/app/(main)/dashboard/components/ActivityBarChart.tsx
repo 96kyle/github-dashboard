@@ -2,17 +2,18 @@ import { DailyActivityMap } from "@/app/types/activities/activity_type";
 import { ResponsiveContainer, Bar, BarChart, XAxis } from "recharts";
 
 export default function ActivityBarChart({
+  today,
   selectedDate,
   prevActivity,
   currActivity,
   shouldRenderChart,
 }: {
+  today: Date;
   selectedDate: Date;
   prevActivity: DailyActivityMap;
   currActivity: DailyActivityMap;
   shouldRenderChart: boolean;
 }) {
-  const today = new Date();
   const nowMonth =
     selectedDate.getMonth() === today.getMonth() &&
     selectedDate.getFullYear() === today.getFullYear();
