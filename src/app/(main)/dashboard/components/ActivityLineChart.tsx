@@ -3,14 +3,12 @@ import {
   MergedActivity,
 } from "@/app/types/activities/activity_type";
 import { subMonths } from "date-fns";
-import { el } from "date-fns/locale";
 import {
   AreaChart,
   Area,
   Line,
   ResponsiveContainer,
   ReferenceDot,
-  Tooltip,
 } from "recharts";
 
 export default function ActivityChart({
