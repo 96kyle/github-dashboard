@@ -5,7 +5,7 @@ import ActivityCalendar from "@/app/(main)/dashboard/components/ActivityCalender
 import { addMonths, endOfMonth, startOfMonth, subMonths } from "date-fns";
 import ActivityCount from "./components/ActivityCount";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import DashboardFallbackView from "./fallback/DashboardFallbackView";
 import { useDebounce } from "use-debounce";
 import { LoginInfo } from "../../types/users/user_type";

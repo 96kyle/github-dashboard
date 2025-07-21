@@ -1,8 +1,4 @@
-import {
-  DailyActivityMap,
-  MergedActivity,
-} from "@/app/types/activities/activity_type";
-import { endOfDay, endOfMonth, subDays } from "date-fns";
+import { DailyActivityMap } from "@/app/types/activities/activity_type";
 import { ResponsiveContainer, Bar, BarChart, XAxis } from "recharts";
 
 export default function ActivityBarChart({

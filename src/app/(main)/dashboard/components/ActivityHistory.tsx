@@ -1,7 +1,4 @@
-import {
-  ActivityItem,
-  DailyActivityMap,
-} from "@/app/types/activities/activity_type";
+import { DailyActivityMap } from "@/app/types/activities/activity_type";
 import { formatDate } from "date-fns";
 import {
   AlertCircle,

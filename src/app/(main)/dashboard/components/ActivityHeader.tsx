@@ -1,10 +1,8 @@
 import { LoginButton } from "@/components/LoginButton";
 import { LogoutButton } from "@/components/LogoutButton";
-import Modal from "@/components/Modal";
 import { format } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
 
 export default function ActivityHeader({
   username,
@@ -20,7 +18,7 @@ export default function ActivityHeader({
   return (
     <div className="w-full bg-white p-4 text-xl  border-b-2 border-gray-300 text-fontNavy flex flex-row justify-between items-center sticky top-0 z-50 ">
       <div>
-        <span className="font-semibold">{username}</span>'s Dashboard
+        <span>{`${username}'s Dashboard`}</span>
       </div>
       <div className="flex flex-row items-center justify-center">
         <ChevronLeft
