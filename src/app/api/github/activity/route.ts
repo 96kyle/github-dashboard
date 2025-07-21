@@ -8,6 +8,7 @@ export async function POST(req: Request) {
     }
 
     const data = await serverFetch({ from, to });
+
     return Response.json(data);
   } catch (e) {
     console.error("Error in /api/activity:", e);
