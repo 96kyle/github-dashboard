@@ -313,8 +313,6 @@ export const getActivities = async ({
     }
   });
 
-  console.log(result);
-
   return result;
 };
 

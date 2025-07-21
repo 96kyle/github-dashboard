@@ -22,8 +22,14 @@ import { useInView } from "react-intersection-observer";
 import ActivityBarChart from "./components/ActivityBarChart";
 import { MergedActivity } from "@/app/types/activities/activity_type";
 
-export default function DashboardView({ userInfo }: { userInfo: LoginInfo }) {
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+export default function DashboardView({
+  userInfo,
+  date,
+}: {
+  userInfo: LoginInfo;
+  date: Date;
+}) {
+  const [selectedDate, setSelectedDate] = useState<Date>(date);
   const [isPending, setIsPending] = useState(false);
   const [debouncedDate] = useDebounce(selectedDate, 1000);
 
@@ -36,6 +42,8 @@ export default function DashboardView({ userInfo }: { userInfo: LoginInfo }) {
 
   const { ref, inView } = useInView({ threshold: 0.1 });
   const [shouldRenderChart, setShouldRenderChart] = useState(false);
+
+  console.log(userInfo.username);
 
   const {
     data: prevData,

@@ -56,10 +56,12 @@ export default async function DashboardPage() {
       }),
   });
 
+  console.log(userInfo.username);
+
   return (
     <div>
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <DashboardView userInfo={userInfo} />
+        <DashboardView userInfo={userInfo} date={today} />
       </HydrationBoundary>
     </div>
   );
