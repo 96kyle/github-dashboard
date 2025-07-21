@@ -135,8 +135,6 @@ export const getAllCommits = async ({
   to,
   token,
 }: ActivityReq): Promise<DailyActivityMap> => {
-  console.log("커밋 실행은 하나요?");
-
   const repos = await getContributedReposInRange({
     username,
     from,
@@ -170,8 +168,6 @@ export const getActivities = async ({
   to,
   token,
 }: ActivityReq): Promise<DailyActivityMap> => {
-  console.log("액티비티 실행은 하나요?");
-
   const query = `
     query($username: String!, $queryString: String!, $from: DateTime!, $to: DateTime!) {
       search(query: $queryString, type: ISSUE, first: 100) {
@@ -262,7 +258,8 @@ export const getActivities = async ({
 
   const result: DailyActivityMap = {};
 
-  json.data.search.nodes.forEach((node: GithubIssueOrPRNode) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  json.data.search.nodes.forEach((node: any) => {
     const korDate = new Date(node.createdAt);
     const searchDate = new Date(from);
 
@@ -292,7 +289,8 @@ export const getActivities = async ({
   const reviews =
     json.data.user.contributionsCollection.pullRequestReviewContributions.nodes;
 
-  reviews.forEach((review: PullRequestReviewContributionNode) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  reviews.forEach((review: any) => {
     const korDate = new Date(review.occurredAt);
     const searchDate = new Date(from);
 
@@ -314,6 +312,8 @@ export const getActivities = async ({
       });
     }
   });
+
+  console.log(result);
 
   return result;
 };
