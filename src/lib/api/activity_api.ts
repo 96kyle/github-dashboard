@@ -149,8 +149,6 @@ export const getAllCommits = async ({
     )
   );
 
-  console.log("커밋 실행은 하나요?");
-
   for (const commits of results) {
     for (const commit of commits) {
       const date = commit.createdAt.split("T")[0];
@@ -331,8 +329,15 @@ export const serverFetch = async ({
   const { username, token } = await getGitHubContext();
 
   const [commitMap, activityMap] = await Promise.all([
-    getActivities({ username, from, to, token }),
     getAllCommits({ username, from, to, token }),
+    (async () => {
+      try {
+        return await getActivities({ username, from, to, token });
+      } catch (e) {
+        console.error("[getActivities error]", e);
+        return {}; // 기본값 반환
+      }
+    })(),
   ]);
   const merged: DailyActivityMap = {};
   const totalCount: Record<ActivityType, number> = {
