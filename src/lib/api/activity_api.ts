@@ -260,9 +260,6 @@ export const getActivities = async ({
 
   const result: DailyActivityMap = {};
 
-  console.log("data length ----->>" + json.data.search.nodes.length);
-  console.log("username ------> " + username);
-
   json.data.search.nodes.forEach((node: GithubIssueOrPRNode) => {
     const korDate = new Date(node.createdAt);
     const searchDate = new Date(from);

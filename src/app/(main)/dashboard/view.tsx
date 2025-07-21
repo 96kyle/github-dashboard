@@ -97,7 +97,7 @@ export default function DashboardView({ userInfo }: { userInfo: LoginInfo }) {
         moveMonth={moveMonth}
         selectedDate={selectedDate}
       />
-      <div className="w-full p-6 max-w-[1300px] self-center">
+      {/* <div className="w-full p-6 max-w-[1300px] self-center">
         {prevLoading || currentLoading || isPending ? (
           <DashboardFallbackView />
         ) : (
@@ -164,7 +164,7 @@ export default function DashboardView({ userInfo }: { userInfo: LoginInfo }) {
             </div>
           </>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }
