@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
-  const today = new Date();
+  const today = new Date().toISOString();
   const from = startOfMonth(today).toISOString();
   const to = endOfMonth(today).toISOString();
 
@@ -55,8 +55,6 @@ export default async function DashboardPage() {
         to: to,
       }),
   });
-
-  console.log(userInfo.username);
 
   return (
     <div>

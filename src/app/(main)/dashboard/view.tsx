@@ -4,7 +4,7 @@ import { fetchData } from "@/lib/api/activity_api";
 import ActivityCalendar from "@/app/(main)/dashboard/components/ActivityCalender";
 import { addMonths, endOfMonth, startOfMonth, subMonths } from "date-fns";
 import ActivityCount from "./components/ActivityCount";
-import { useQuery } from "@tanstack/react-query";
+import { dehydrate, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import DashboardFallbackView from "./fallback/DashboardFallbackView";
 import { useDebounce } from "use-debounce";
@@ -27,9 +27,9 @@ export default function DashboardView({
   date,
 }: {
   userInfo: LoginInfo;
-  date: Date;
+  date: string;
 }) {
-  const [selectedDate, setSelectedDate] = useState<Date>(date);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date(date));
   const [isPending, setIsPending] = useState(false);
   const [debouncedDate] = useDebounce(selectedDate, 1000);
 
@@ -42,8 +42,6 @@ export default function DashboardView({
 
   const { ref, inView } = useInView({ threshold: 0.1 });
   const [shouldRenderChart, setShouldRenderChart] = useState(false);
-
-  console.log(userInfo.username);
 
   const {
     data: prevData,
