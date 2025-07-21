@@ -63,7 +63,6 @@ export const getContributedReposInRange = async ({
 
   const data = json.data.user.contributionsCollection;
 
-  // eslint-disable-next-line
   data.commitContributionsByRepository.forEach(
     (entry: CommitContributionEntry) => {
       push(entry.repository.owner.login, entry.repository.name);
@@ -259,6 +258,9 @@ export const getActivities = async ({
 
   const result: DailyActivityMap = {};
 
+  console.log("data length ----->>" + json.data.search.nodes.length);
+  console.log("username ------> " + username);
+
   json.data.search.nodes.forEach((node: GithubIssueOrPRNode) => {
     const korDate = new Date(node.createdAt);
     const searchDate = new Date(from);
@@ -289,7 +291,6 @@ export const getActivities = async ({
   const reviews =
     json.data.user.contributionsCollection.pullRequestReviewContributions.nodes;
 
-  // eslint-disable-next-line
   reviews.forEach((review: PullRequestReviewContributionNode) => {
     const korDate = new Date(review.occurredAt);
     const searchDate = new Date(from);
