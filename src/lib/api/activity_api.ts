@@ -1,8 +1,11 @@
 import {
   ActivityItem,
   ActivityType,
+  CommitContributionEntry,
   DailyActivityMap,
+  GithubIssueOrPRNode,
   MergedActivity,
+  PullRequestReviewContributionNode,
 } from "@/app/types/activities/activity_type";
 import { ActivityReq } from "@/app/types/activities/activity_request";
 import { getGitHubContext } from "../auth/github_auth";
@@ -60,9 +63,12 @@ export const getContributedReposInRange = async ({
 
   const data = json.data.user.contributionsCollection;
 
-  data.commitContributionsByRepository.forEach((entry: any) => {
-    push(entry.repository.owner.login, entry.repository.name);
-  });
+  // eslint-disable-next-line
+  data.commitContributionsByRepository.forEach(
+    (entry: CommitContributionEntry) => {
+      push(entry.repository.owner.login, entry.repository.name);
+    }
+  );
 
   return Array.from(repos).map((fullName) => {
     const [owner, name] = fullName.split("/");
@@ -100,17 +106,17 @@ export const fetchCommitsForRepo = async (
     const json = await res.json();
     if (!Array.isArray(json)) break;
 
-    const commits = json.map(
-      (commit: any) =>
-        ({
-          state: "",
-          title: commit.commit.message.split("\n")[0],
-          repo: `${owner}/${repo}`,
-          url: commit.html_url,
-          createdAt: commit.commit.author.date,
-          type: "commit",
-        } as ActivityItem)
-    );
+    const commits = json.map((commit) => {
+      const activity: ActivityItem = {
+        state: "",
+        title: commit.commit.message.split("\n")[0],
+        repo: `${owner}/${repo}`,
+        url: commit.html_url,
+        createdAt: commit.commit.author.date,
+        type: "commit",
+      };
+      return activity;
+    });
 
     allCommits.push(...commits);
 
@@ -253,7 +259,7 @@ export const getActivities = async ({
 
   const result: DailyActivityMap = {};
 
-  json.data.search.nodes.forEach((node: any) => {
+  json.data.search.nodes.forEach((node: GithubIssueOrPRNode) => {
     const korDate = new Date(node.createdAt);
     const searchDate = new Date(from);
 
@@ -282,7 +288,9 @@ export const getActivities = async ({
 
   const reviews =
     json.data.user.contributionsCollection.pullRequestReviewContributions.nodes;
-  reviews.forEach((review: any) => {
+
+  // eslint-disable-next-line
+  reviews.forEach((review: PullRequestReviewContributionNode) => {
     const korDate = new Date(review.occurredAt);
     const searchDate = new Date(from);
 

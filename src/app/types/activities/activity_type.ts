@@ -17,3 +17,44 @@ export type MergedActivity = {
   map: DailyActivityMap;
   totalCount: Record<ActivityType, number>;
 };
+
+export type CommitContributionEntry = {
+  repository: {
+    name: string;
+    owner: {
+      login: string;
+    };
+  };
+};
+
+export type GithubIssueOrPRNode = {
+  __typename: "Issue" | "PullRequest";
+  createdAt: string;
+  title: string;
+  url: string;
+  state: "OPEN" | "CLOSED" | "MERGED" | string;
+  author: {
+    login: string;
+  };
+  repository: {
+    name: string;
+    owner: {
+      login: string;
+    };
+  };
+};
+
+export type PullRequestReviewContributionNode = {
+  occurredAt: string;
+  pullRequest: {
+    title: string;
+    url: string;
+    state: string;
+    repository: {
+      name: string;
+      owner: {
+        login: string;
+      };
+    };
+  };
+};
