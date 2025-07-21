@@ -1,7 +1,7 @@
 "use client";
 
 import { fetchData } from "@/lib/api/activity_api";
-import ActivityCalendar from "@/app/(main)/dashboard/components/ActivityCalender";
+// import ActivityCalendar from "@/app/(main)/dashboard/components/ActivityCalender";
 import { addMonths, endOfMonth, startOfMonth, subMonths } from "date-fns";
 import ActivityCount from "./components/ActivityCount";
 import { useQuery } from "@tanstack/react-query";
@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import DashboardFallbackView from "./fallback/DashboardFallbackView";
 import { useDebounce } from "use-debounce";
 import { LoginInfo } from "../../types/users/user_type";
-import ActivityHistory from "./components/ActivityHistory";
+// import ActivityHistory from "./components/ActivityHistory";
 import {
   AlertCircle,
   GitCommit,
@@ -17,9 +17,9 @@ import {
   MessageSquare,
 } from "lucide-react";
 import ActivityHeader from "./components/ActivityHeader";
-import ActivityLineChart from "./components/ActivityLineChart";
+// import ActivityLineChart from "./components/ActivityLineChart";
 import { useInView } from "react-intersection-observer";
-import ActivityBarChart from "./components/ActivityBarChart";
+// import ActivityBarChart from "./components/ActivityBarChart";
 import { MergedActivity } from "@/app/types/activities/activity_type";
 
 export default function DashboardView({ userInfo }: { userInfo: LoginInfo }) {
@@ -48,7 +48,7 @@ export default function DashboardView({ userInfo }: { userInfo: LoginInfo }) {
         from: prevFrom,
         to: prevTo,
       }),
-    staleTime: 1000 * 60 * 5,
+    staleTime: 100,
   });
 
   const {
@@ -63,7 +63,7 @@ export default function DashboardView({ userInfo }: { userInfo: LoginInfo }) {
         to,
       }),
 
-    staleTime: 1000 * 60 * 5,
+    staleTime: 100,
   });
 
   useEffect(() => {
@@ -97,11 +97,11 @@ export default function DashboardView({ userInfo }: { userInfo: LoginInfo }) {
         moveMonth={moveMonth}
         selectedDate={selectedDate}
       />
-      {/* <div className="w-full p-6 max-w-[1300px] self-center">
+      <div className="w-full p-6 max-w-[1300px] self-center">
         {prevLoading || currentLoading || isPending ? (
           <DashboardFallbackView />
         ) : (
-          <>
+          <div>
             <div className="flex flex-row mb-4 gap-6">
               <ActivityCount
                 count={currentData?.totalCount.commit ?? 0}
@@ -132,7 +132,7 @@ export default function DashboardView({ userInfo }: { userInfo: LoginInfo }) {
                 beforeCount={prevData?.totalCount.review ?? 0}
               />
             </div>
-            <ActivityCalendar
+            {/* <ActivityCalendar
               data={currentData!.map}
               count={
                 (currentData?.totalCount.commit ?? 0) +
@@ -142,9 +142,9 @@ export default function DashboardView({ userInfo }: { userInfo: LoginInfo }) {
               }
               selectedDate={selectedDate}
               setSelectedDate={setSelectedDate}
-            />
+            /> */}
 
-            <ActivityHistory
+            {/* <ActivityHistory
               items={currentData?.map ?? {}}
               selectedDate={selectedDate}
             />
@@ -161,10 +161,10 @@ export default function DashboardView({ userInfo }: { userInfo: LoginInfo }) {
                 selectedDate={selectedDate}
                 shouldRenderChart={shouldRenderChart}
               />
-            </div>
-          </>
+            </div> */}
+          </div>
         )}
-      </div> */}
+      </div>
     </div>
   );
 }

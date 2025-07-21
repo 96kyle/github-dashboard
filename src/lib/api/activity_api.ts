@@ -135,6 +135,8 @@ export const getAllCommits = async ({
   to,
   token,
 }: ActivityReq): Promise<DailyActivityMap> => {
+  console.log("커밋 실행은 하나요?");
+
   const repos = await getContributedReposInRange({
     username,
     from,
