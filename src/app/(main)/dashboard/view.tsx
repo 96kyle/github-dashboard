@@ -7,7 +7,7 @@ import ActivityCount from "./components/ActivityCount";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import DashboardFallbackView from "./fallback/DashboardFallbackView";
-// import { useDebounce } from "use-debounce";
+import { useDebounce } from "use-debounce";
 import { LoginInfo } from "../../types/users/user_type";
 import ActivityHistory from "./components/ActivityHistory";
 import {
@@ -17,9 +17,9 @@ import {
   MessageSquare,
 } from "lucide-react";
 import ActivityHeader from "./components/ActivityHeader";
-import ActivityLineChart from "./components/ActivityLineChart";
+// import ActivityLineChart from "./components/ActivityLineChart";
 import { useInView } from "react-intersection-observer";
-import ActivityBarChart from "./components/ActivityBarChart";
+// import ActivityBarChart from "./components/ActivityBarChart";
 import { MergedActivity } from "@/app/types/activities/activity_type";
 
 export default function DashboardView({
@@ -31,12 +31,12 @@ export default function DashboardView({
 }) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date(date));
   const [isPending, setIsPending] = useState(false);
-  // const [debouncedDate] = useDebounce(selectedDate, 1000);
+  const [debouncedDate] = useDebounce(selectedDate, 1000);
 
-  const from = startOfMonth(selectedDate).toISOString();
-  const to = endOfMonth(selectedDate).toISOString();
+  const from = startOfMonth(debouncedDate).toISOString();
+  const to = endOfMonth(debouncedDate).toISOString();
 
-  const prevMonth = subMonths(selectedDate, 1);
+  const prevMonth = subMonths(debouncedDate, 1);
   const prevFrom = startOfMonth(prevMonth).toISOString();
   const prevTo = endOfMonth(prevMonth).toISOString();
 
@@ -74,9 +74,9 @@ export default function DashboardView({
     staleTime: 1000 * 60 * 5,
   });
 
-  // useEffect(() => {
-  //   setSelectedDate(debouncedDate);
-  // }, [debouncedDate]);
+  useEffect(() => {
+    setSelectedDate(debouncedDate);
+  }, [debouncedDate]);
 
   useEffect(() => {
     if (!prevFetching && !currentFetching) setIsPending(false);
@@ -156,7 +156,7 @@ export default function DashboardView({
               items={currentData?.map ?? {}}
               selectedDate={selectedDate}
             />
-            <div ref={ref} className="flex flex-row gap-6 mt-4">
+            {/* <div ref={ref} className="flex flex-row gap-6 mt-4">
               <ActivityLineChart
                 today={new Date(date)}
                 selectedDate={selectedDate}
@@ -171,7 +171,7 @@ export default function DashboardView({
                 selectedDate={selectedDate}
                 shouldRenderChart={shouldRenderChart}
               />
-            </div>
+            </div> */}
           </>
         )}
       </div>
