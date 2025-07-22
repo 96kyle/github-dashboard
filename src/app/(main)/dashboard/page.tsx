@@ -1,10 +1,6 @@
 import { fetchData } from "@/lib/api/activity_api";
 import DashboardView from "./view";
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 import { endOfMonth, startOfMonth, subMonths } from "date-fns";
 import { getGitHubContext } from "@/lib/auth/github_auth";
 import { LoginInfo } from "@/app/types/users/user_type";
