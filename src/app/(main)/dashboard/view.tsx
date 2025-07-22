@@ -71,9 +71,9 @@ export default function DashboardView({
     setSelectedDate(debouncedDate);
   }, [debouncedDate]);
 
-  useEffect(() => {
-    if (!prevLoading && !currentLoading) setIsPending(false);
-  }, [prevData, currentData, prevLoading, currentLoading]);
+  // useEffect(() => {
+  //   if (!prevLoading && !currentLoading) setIsPending(false);
+  // }, [prevData, currentData, prevLoading, currentLoading]);
 
   useEffect(() => {
     if (inView) {
