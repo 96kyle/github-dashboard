@@ -251,6 +251,8 @@ export const getActivities = async ({
 
     const json = await res.json();
 
+    console.log(json);
+
     if (json.errors) {
       console.error("GraphQL Error:", json.errors);
       throw new Error("GraphQL query failed");
@@ -259,60 +261,60 @@ export const getActivities = async ({
     const result: DailyActivityMap = {};
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    json.data.search.nodes.forEach((node: any) => {
-      const korDate = new Date(node.createdAt);
-      const searchDate = new Date(from);
+    // json.data.search.nodes.forEach((node: any) => {
+    //   const korDate = new Date(node.createdAt);
+    //   const searchDate = new Date(from);
 
-      const date = `${korDate.getFullYear()}-${(korDate.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}-${korDate.getDate().toString().padStart(2, "0")}`;
-      const type = node.url.includes("/pull/") ? "pr" : "issue";
-      const repo = `${node.repository.owner.login}/${node.repository.name}`;
+    //   const date = `${korDate.getFullYear()}-${(korDate.getMonth() + 1)
+    //     .toString()
+    //     .padStart(2, "0")}-${korDate.getDate().toString().padStart(2, "0")}`;
+    //   const type = node.url.includes("/pull/") ? "pr" : "issue";
+    //   const repo = `${node.repository.owner.login}/${node.repository.name}`;
 
-      if (
-        node.author.login === username &&
-        korDate.getMonth() === searchDate.getMonth()
-      ) {
-        if (!result[date]) result[date] = [];
+    //   if (
+    //     node.author.login === username &&
+    //     korDate.getMonth() === searchDate.getMonth()
+    //   ) {
+    //     if (!result[date]) result[date] = [];
 
-        result[date].push({
-          title: node.title,
-          url: node.url,
-          createdAt: node.createdAt,
-          type,
-          state: node.state,
-          repo,
-        });
-      }
-    });
+    //     result[date].push({
+    //       title: node.title,
+    //       url: node.url,
+    //       createdAt: node.createdAt,
+    //       type,
+    //       state: node.state,
+    //       repo,
+    //     });
+    //   }
+    // });
 
-    const reviews =
-      json.data.user.contributionsCollection.pullRequestReviewContributions
-        .nodes;
+    // const reviews =
+    //   json.data.user.contributionsCollection.pullRequestReviewContributions
+    //     .nodes;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    reviews.forEach((review: any) => {
-      const korDate = new Date(review.occurredAt);
-      const searchDate = new Date(from);
+    // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // reviews.forEach((review: any) => {
+    //   const korDate = new Date(review.occurredAt);
+    //   const searchDate = new Date(from);
 
-      const date = `${korDate.getFullYear()}-${(korDate.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}-${korDate.getDate().toString().padStart(2, "0")}`;
+    //   const date = `${korDate.getFullYear()}-${(korDate.getMonth() + 1)
+    //     .toString()
+    //     .padStart(2, "0")}-${korDate.getDate().toString().padStart(2, "0")}`;
 
-      const repo = `${review.pullRequest.repository.owner.login}/${review.pullRequest.repository.name}`;
+    //   const repo = `${review.pullRequest.repository.owner.login}/${review.pullRequest.repository.name}`;
 
-      if (korDate.getMonth() === searchDate.getMonth()) {
-        if (!result[date]) result[date] = [];
-        result[date].push({
-          title: review.pullRequest.title,
-          url: review.pullRequest.url,
-          createdAt: review.occurredAt,
-          type: "review",
-          state: review.pullRequest.state,
-          repo,
-        });
-      }
-    });
+    //   if (korDate.getMonth() === searchDate.getMonth()) {
+    //     if (!result[date]) result[date] = [];
+    //     result[date].push({
+    //       title: review.pullRequest.title,
+    //       url: review.pullRequest.url,
+    //       createdAt: review.occurredAt,
+    //       type: "review",
+    //       state: review.pullRequest.state,
+    //       repo,
+    //     });
+    //   }
+    // });
 
     return result;
   } catch (e) {
