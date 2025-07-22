@@ -40,6 +40,7 @@ export default async function DashboardPage() {
       fetchData({
         from: prevFrom,
         to: prevTo,
+        isServer: true,
       }),
   });
 
@@ -49,6 +50,7 @@ export default async function DashboardPage() {
       fetchData({
         from: from,
         to: to,
+        isServer: true,
       }),
   });
 

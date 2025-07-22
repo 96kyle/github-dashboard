@@ -57,6 +57,7 @@ export default function DashboardView({
       fetchData({
         from: prevFrom,
         to: prevTo,
+        isServer: false,
       }),
     staleTime: 1000 * 60 * 5,
     initialData: initPrevData,
@@ -72,6 +73,7 @@ export default function DashboardView({
       fetchData({
         from,
         to,
+        isServer: false,
       }),
 
     staleTime: 1000 * 60 * 5,

@@ -323,19 +323,15 @@ export const serverFetch = async ({
   from: string;
   to: string;
 }): Promise<MergedActivity> => {
+  console.log("서버 패치 실행?");
+
   const { username, token } = await getGitHubContext();
 
   const [commitMap, activityMap] = await Promise.all([
     getAllCommits({ username, from, to, token }),
-    (async () => {
-      try {
-        return await getActivities({ username, from, to, token });
-      } catch (e) {
-        console.error("[getActivities error]", e);
-        return {}; // 기본값 반환
-      }
-    })(),
+    getActivities({ username, from, to, token }),
   ]);
+
   const merged: DailyActivityMap = {};
   const totalCount: Record<ActivityType, number> = {
     pr: 0,
@@ -371,6 +367,8 @@ export const clientFetch = async ({
   from: string;
   to: string;
 }) => {
+  console.log("클라 패치 실행?");
+
   const res = await fetch("/api/github/activity", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -384,13 +382,12 @@ export const clientFetch = async ({
 export const fetchData = async ({
   from,
   to,
+  isServer,
 }: {
   from: string;
   to: string;
+  isServer: boolean;
 }): Promise<MergedActivity> => {
-  // 서버 환경인지 감지
-  const isServer = typeof window === "undefined";
-
   if (isServer) {
     return serverFetch({ from, to });
   } else {
