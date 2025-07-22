@@ -370,11 +370,13 @@ export const clientFetch = async ({
   from: string;
   to: string;
 }): Promise<MergedActivity> => {
+  console.log("클라 패치 실행");
   const res = await fetch("/api/github/activity", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ from, to }),
   });
+  console.log("클라 패치 종료");
 
   if (!res.ok) throw new Error("클라이언트 요청 실패");
 
