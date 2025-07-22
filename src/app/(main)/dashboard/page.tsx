@@ -41,7 +41,7 @@ export default async function DashboardPage() {
   const userInfo: LoginInfo = await getGitHubContext();
 
   await queryClient.prefetchQuery<MergedActivity>({
-    queryKey: ["activity", userInfo.username, prevFrom],
+    queryKey: ["activity", userInfo.username, prevFrom.substring(0, 10)],
     queryFn: () =>
       fetchData({
         from: prevFrom,
@@ -52,7 +52,7 @@ export default async function DashboardPage() {
   });
 
   await queryClient.prefetchQuery<MergedActivity>({
-    queryKey: ["activity", userInfo.username, from],
+    queryKey: ["activity", userInfo.username, from.substring(0, 10)],
     queryFn: () =>
       fetchData({
         from: from,
