@@ -1,26 +1,28 @@
 "use client";
 
-import { fetchData } from "@/lib/api/activity_api";
-import ActivityCalendar from "@/app/(main)/dashboard/components/ActivityCalender";
-import { addMonths, endOfMonth, startOfMonth, subMonths } from "date-fns";
-import ActivityCount from "./components/ActivityCount";
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import DashboardFallbackView from "./fallback/DashboardFallbackView";
-import { useDebounce } from "use-debounce";
-import { LoginInfo } from "../../types/users/user_type";
-import ActivityHistory from "./components/ActivityHistory";
-import {
-  AlertCircle,
-  GitCommit,
-  GitPullRequest,
-  MessageSquare,
-} from "lucide-react";
-import ActivityHeader from "./components/ActivityHeader";
-import ActivityLineChart from "./components/ActivityLineChart";
-import { useInView } from "react-intersection-observer";
-import ActivityBarChart from "./components/ActivityBarChart";
-import { MergedActivity } from "@/app/types/activities/activity_type";
+import { LoginInfo } from "@/app/types/users/user_type";
+
+// import { fetchData } from "@/lib/api/activity_api";
+// import ActivityCalendar from "@/app/(main)/dashboard/components/ActivityCalender";
+// import { addMonths, endOfMonth, startOfMonth, subMonths } from "date-fns";
+// import ActivityCount from "./components/ActivityCount";
+// import { useQuery } from "@tanstack/react-query";
+// import { useEffect, useState } from "react";
+// import DashboardFallbackView from "./fallback/DashboardFallbackView";
+// import { useDebounce } from "use-debounce";
+// import { LoginInfo } from "../../types/users/user_type";
+// import ActivityHistory from "./components/ActivityHistory";
+// import {
+//   AlertCircle,
+//   GitCommit,
+//   GitPullRequest,
+//   MessageSquare,
+// } from "lucide-react";
+// import ActivityHeader from "./components/ActivityHeader";
+// import ActivityLineChart from "./components/ActivityLineChart";
+// import { useInView } from "react-intersection-observer";
+// import ActivityBarChart from "./components/ActivityBarChart";
+// import { MergedActivity } from "@/app/types/activities/activity_type";
 
 export default function DashboardView({
   userInfo,
@@ -29,71 +31,73 @@ export default function DashboardView({
   userInfo: LoginInfo;
   date: Date;
 }) {
-  const [selectedDate, setSelectedDate] = useState<Date>(date);
-  const [isPending, setIsPending] = useState(false);
-  const [debouncedDate] = useDebounce(selectedDate, 1000);
+  // const [selectedDate, setSelectedDate] = useState<Date>(date);
+  // const [isPending, setIsPending] = useState(false);
+  // const [debouncedDate] = useDebounce(selectedDate, 1000);
 
-  const from = startOfMonth(debouncedDate).toISOString();
-  const to = endOfMonth(debouncedDate).toISOString();
+  // const from = startOfMonth(debouncedDate).toISOString();
+  // const to = endOfMonth(debouncedDate).toISOString();
 
-  const prevMonth = subMonths(debouncedDate, 1);
-  const prevFrom = startOfMonth(prevMonth).toISOString();
-  const prevTo = endOfMonth(prevMonth).toISOString();
+  // const prevMonth = subMonths(debouncedDate, 1);
+  // const prevFrom = startOfMonth(prevMonth).toISOString();
+  // const prevTo = endOfMonth(prevMonth).toISOString();
 
-  const { ref, inView } = useInView({ threshold: 0.1 });
-  const [shouldRenderChart, setShouldRenderChart] = useState(false);
+  // const { ref, inView } = useInView({ threshold: 0.1 });
+  // const [shouldRenderChart, setShouldRenderChart] = useState(false);
 
-  const { data: prevData, isLoading: prevLoading } = useQuery<MergedActivity>({
-    queryKey: ["activity", userInfo.username, prevFrom],
-    queryFn: () =>
-      fetchData({
-        from: prevFrom,
-        to: prevTo,
-        isServer: false,
-      }),
-    staleTime: 1000 * 60 * 5,
-  });
+  // const { data: prevData, isLoading: prevLoading } = useQuery<MergedActivity>({
+  //   queryKey: ["activity", userInfo.username, prevFrom],
+  //   queryFn: () =>
+  //     fetchData({
+  //       from: prevFrom,
+  //       to: prevTo,
+  //       isServer: false,
+  //     }),
+  //   staleTime: 1000 * 60 * 5,
+  // });
 
-  const { data: currentData, isLoading: currentLoading } =
-    useQuery<MergedActivity>({
-      queryKey: ["activity", userInfo.username, from],
-      queryFn: () =>
-        fetchData({
-          from,
-          to,
-          isServer: false,
-        }),
+  // const { data: currentData, isLoading: currentLoading } =
+  //   useQuery<MergedActivity>({
+  //     queryKey: ["activity", userInfo.username, from],
+  //     queryFn: () =>
+  //       fetchData({
+  //         from,
+  //         to,
+  //         isServer: false,
+  //       }),
 
-      staleTime: 1000 * 60 * 5,
-    });
+  //     staleTime: 1000 * 60 * 5,
+  //   });
 
-  useEffect(() => {
-    setSelectedDate(debouncedDate);
-  }, [debouncedDate]);
+  // useEffect(() => {
+  //   setSelectedDate(debouncedDate);
+  // }, [debouncedDate]);
 
-  useEffect(() => {
-    if (!prevLoading && !currentLoading) setIsPending(false);
-  }, [prevData, currentData, prevLoading, currentLoading]);
+  // useEffect(() => {
+  //   if (!prevLoading && !currentLoading) setIsPending(false);
+  // }, [prevData, currentData, prevLoading, currentLoading]);
 
-  useEffect(() => {
-    if (inView) {
-      setShouldRenderChart(true); // 한 번만 렌더링
-    }
-  }, [inView]);
+  // useEffect(() => {
+  //   if (inView) {
+  //     setShouldRenderChart(true); // 한 번만 렌더링
+  //   }
+  // }, [inView]);
 
-  const moveMonth = async (isPrev: boolean) => {
-    setIsPending(true);
-    setShouldRenderChart(false);
-    if (isPrev) {
-      setSelectedDate(startOfMonth(subMonths(selectedDate, 1)));
-    } else {
-      setSelectedDate(startOfMonth(addMonths(selectedDate, 1)));
-    }
-  };
+  // const moveMonth = async (isPrev: boolean) => {
+  //   setIsPending(true);
+  //   setShouldRenderChart(false);
+  //   if (isPrev) {
+  //     setSelectedDate(startOfMonth(subMonths(selectedDate, 1)));
+  //   } else {
+  //     setSelectedDate(startOfMonth(addMonths(selectedDate, 1)));
+  //   }
+  // };
 
   return (
     <div className="flex flex-col items-center">
-      <ActivityHeader
+      <p>{userInfo.username}</p>
+      <p>{date.toISOString()}</p>
+      {/* <ActivityHeader
         username={userInfo.username}
         moveMonth={moveMonth}
         selectedDate={selectedDate}
@@ -167,7 +171,7 @@ export default function DashboardView({
             </div>
           </>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }
