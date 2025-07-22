@@ -6,7 +6,7 @@ import { endOfMonth, startOfMonth, subMonths } from "date-fns";
 // import ActivityCount from "./components/ActivityCount";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-// import DashboardFallbackView from "./fallback/DashboardFallbackView";
+import DashboardFallbackView from "./fallback/DashboardFallbackView";
 import { useDebounce } from "use-debounce";
 import { LoginInfo } from "../../types/users/user_type";
 // import ActivityHistory from "./components/ActivityHistory";
@@ -30,6 +30,7 @@ export default function DashboardView({
   date: Date;
 }) {
   const [selectedDate, setSelectedDate] = useState<Date>(date);
+  const [isPending, setIsPending] = useState(false);
   const [debouncedDate] = useDebounce(selectedDate, 1000);
 
   const from = startOfMonth(debouncedDate).toISOString();
@@ -70,7 +71,9 @@ export default function DashboardView({
     setSelectedDate(debouncedDate);
   }, [debouncedDate]);
 
-  useEffect(() => {}, [prevData, currentData, prevLoading, currentLoading]);
+  useEffect(() => {
+    if (!prevLoading && !currentLoading) setIsPending(false);
+  }, [prevData, currentData, prevLoading, currentLoading]);
 
   // useEffect(() => {
   //   if (inView) {
@@ -96,12 +99,12 @@ export default function DashboardView({
         selectedDate={selectedDate}
       /> */}
       <div className="w-full p-6 max-w-[1300px] self-center">
-        {/* {prevLoading || currentLoading || isPending ? (
+        {prevLoading || currentLoading || isPending ? (
           <DashboardFallbackView />
         ) : (
           <>
-            <div className="flex flex-row mb-4 gap-6"> */}
-        {/* <ActivityCount
+            <div className="flex flex-row mb-4 gap-6">
+              {/* <ActivityCount
                 count={currentData?.totalCount.commit ?? 0}
                 title="Commits"
                 Icon={GitCommit}
@@ -161,9 +164,9 @@ export default function DashboardView({
                 selectedDate={selectedDate}
                 shouldRenderChart={shouldRenderChart}
               /> */}
-        {/* </div>
+            </div>
           </>
-        )} */}
+        )}
       </div>
     </div>
   );
