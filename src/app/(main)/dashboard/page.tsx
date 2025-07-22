@@ -6,6 +6,7 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import { endOfMonth, startOfMonth, subMonths } from "date-fns";
+import { toZonedTime, format } from "date-fns-tz";
 import { getGitHubContext } from "@/lib/auth/github_auth";
 import { LoginInfo } from "@/app/types/users/user_type";
 import { Metadata } from "next";
@@ -26,7 +27,8 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
-  const today = new Date(2025, 6, 22).toISOString();
+  const date = new Date();
+  const today = toZonedTime(date, "Asia/Seoul");
   const from = startOfMonth(today).toISOString();
   const to = endOfMonth(today).toISOString();
 

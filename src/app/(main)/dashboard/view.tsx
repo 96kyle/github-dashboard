@@ -1,7 +1,7 @@
 "use client";
 
 import { fetchData } from "@/lib/api/activity_api";
-import ActivityCalendar from "@/app/(main)/dashboard/components/ActivityCalender";
+// import ActivityCalendar from "@/app/(main)/dashboard/components/ActivityCalender";
 import { addMonths, endOfMonth, startOfMonth, subMonths } from "date-fns";
 import ActivityCount from "./components/ActivityCount";
 import { useQuery } from "@tanstack/react-query";
@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import DashboardFallbackView from "./fallback/DashboardFallbackView";
 import { useDebounce } from "use-debounce";
 import { LoginInfo } from "../../types/users/user_type";
-import ActivityHistory from "./components/ActivityHistory";
+// import ActivityHistory from "./components/ActivityHistory";
 import {
   AlertCircle,
   GitCommit,
@@ -27,9 +27,9 @@ export default function DashboardView({
   date,
 }: {
   userInfo: LoginInfo;
-  date: string;
+  date: Date;
 }) {
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date(date));
+  const [selectedDate, setSelectedDate] = useState<Date>(date);
   const [isPending, setIsPending] = useState(false);
   const [debouncedDate] = useDebounce(selectedDate, 1000);
 
@@ -140,7 +140,7 @@ export default function DashboardView({
                 beforeCount={prevData?.totalCount.review ?? 0}
               />
             </div>
-            <ActivityCalendar
+            {/* <ActivityCalendar
               data={currentData!.map}
               count={
                 (currentData?.totalCount.commit ?? 0) +
@@ -150,12 +150,12 @@ export default function DashboardView({
               }
               selectedDate={selectedDate}
               setSelectedDate={setSelectedDate}
-            />
+            /> */}
 
-            <ActivityHistory
+            {/* <ActivityHistory
               items={currentData?.map ?? {}}
               selectedDate={selectedDate}
-            />
+            /> */}
             <div ref={ref} className="flex flex-row gap-6 mt-4">
               <ActivityLineChart
                 today={new Date(date)}
