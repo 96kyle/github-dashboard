@@ -333,6 +333,8 @@ export const serverFetch = async ({
   const commitMap = await getAllCommits({ username, from, to, token });
   const activityMap = await getActivities({ username, from, to, token });
 
+  console.log(activityMap);
+
   const merged: DailyActivityMap = {};
   const totalCount: Record<ActivityType, number> = {
     pr: 0,
