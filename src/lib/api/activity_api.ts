@@ -269,21 +269,21 @@ export const getActivities = async ({
       const type = node.url.includes("/pull/") ? "pr" : "issue";
       const repo = `${node.repository.owner.login}/${node.repository.name}`;
 
-      // if (
-      //   node.author.login === username &&
-      //   korDate.getMonth() === searchDate.getMonth()
-      // ) {
-      if (!result[date]) result[date] = [];
+      if (
+        node.author.login === username &&
+        korDate.getMonth() === searchDate.getMonth()
+      ) {
+        if (!result[date]) result[date] = [];
 
-      result[date].push({
-        title: node.title,
-        url: node.url,
-        createdAt: node.createdAt,
-        type,
-        state: node.state,
-        repo,
-      });
-      // }
+        result[date].push({
+          title: node.title,
+          url: node.url,
+          createdAt: node.createdAt,
+          type,
+          state: node.state,
+          repo,
+        });
+      }
     });
 
     const reviews =
@@ -330,7 +330,7 @@ export const serverFetch = async ({
 }): Promise<MergedActivity> => {
   const { username, token } = await getGitHubContext();
 
-  console.log(username + token);
+  console.log(from + to + username + token);
 
   const commitMap = await getAllCommits({ username, from, to, token });
   const activityMap = await getActivities({ username, from, to, token });
