@@ -48,6 +48,7 @@ export default async function DashboardPage() {
         to: prevTo,
         isServer: true,
       }),
+    staleTime: 1000 * 60 * 5,
   });
 
   await queryClient.prefetchQuery<MergedActivity>({
@@ -58,6 +59,7 @@ export default async function DashboardPage() {
         to: to,
         isServer: true,
       }),
+    staleTime: 1000 * 60 * 5,
   });
 
   return (
