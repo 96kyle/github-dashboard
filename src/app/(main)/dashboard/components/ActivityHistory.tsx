@@ -1,5 +1,5 @@
 import { DailyActivityMap } from "@/app/types/activities/activity_type";
-import { format } from "date-fns-tz";
+import { format, toZonedTime } from "date-fns-tz";
 import {
   AlertCircle,
   Calendar,
@@ -55,7 +55,9 @@ export default function ActivityHistory({
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
           {selectedDate
-            ? `${new Date(selectedDate).getDate()}일 활동`
+            ? `${new Date(
+                toZonedTime(selectedDate, "Asia/Seoul")
+              ).getDate()}일 활동`
             : "날짜를 선택하세요"}
         </h3>
 
