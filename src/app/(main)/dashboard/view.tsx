@@ -2,7 +2,7 @@
 
 import { fetchData } from "@/lib/api/activity_api";
 // import ActivityCalendar from "@/app/(main)/dashboard/components/ActivityCalender";
-import { addMonths, endOfMonth, startOfMonth, subMonths } from "date-fns";
+import { endOfMonth, startOfMonth, subMonths } from "date-fns";
 // import ActivityCount from "./components/ActivityCount";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -81,15 +81,15 @@ export default function DashboardView({
   //   }
   // }, [inView]);
 
-  const moveMonth = async (isPrev: boolean) => {
-    setIsPending(true);
-    // setShouldRenderChart(false);
-    if (isPrev) {
-      setSelectedDate(startOfMonth(subMonths(selectedDate, 1)));
-    } else {
-      setSelectedDate(startOfMonth(addMonths(selectedDate, 1)));
-    }
-  };
+  // const moveMonth = async (isPrev: boolean) => {
+  //   setIsPending(true);
+  //   // setShouldRenderChart(false);
+  //   if (isPrev) {
+  //     setSelectedDate(startOfMonth(subMonths(selectedDate, 1)));
+  //   } else {
+  //     setSelectedDate(startOfMonth(addMonths(selectedDate, 1)));
+  //   }
+  // };
 
   return (
     <div className="flex flex-col items-center">
