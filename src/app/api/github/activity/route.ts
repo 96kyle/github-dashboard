@@ -1,17 +1,28 @@
+import { NextResponse } from "next/server";
 import { serverFetch } from "@/lib/api/activity_api";
 
 export async function POST(req: Request) {
   try {
     const { from, to } = await req.json();
+
     if (!from || !to) {
-      return new Response("Missing fields", { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid 'from' or 'to' field" },
+        { status: 400 }
+      );
     }
+    console.log("클라 패치 실행");
+    const data = await serverFetch({ from, to, isServer: true });
+    console.log(data);
 
-    const data = await serverFetch({ from, to });
-
-    return Response.json(data);
+    return NextResponse.json(data, { status: 200 });
   } catch (e) {
-    console.error("Error in /api/activity:", e);
-    return new Response("Internal Server Error", { status: 500 });
+    const message = e instanceof Error ? e.message : String(e);
+    console.error("Error in /api/activity:", message);
+
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
