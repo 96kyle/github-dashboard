@@ -251,7 +251,8 @@ export const getActivities = async ({
 
     const json = await res.json();
 
-    console.log(json);
+    console.log(json.data.search.nodes.length);
+    console.log(json.data.user.contributionsCollection);
 
     if (json.errors) {
       console.error("GraphQL Error:", json.errors);
