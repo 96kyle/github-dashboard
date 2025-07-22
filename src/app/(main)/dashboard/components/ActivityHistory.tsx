@@ -1,5 +1,5 @@
 import { DailyActivityMap } from "@/app/types/activities/activity_type";
-import { formatDate } from "date-fns";
+import { format } from "date-fns-tz";
 import {
   AlertCircle,
   Calendar,
@@ -46,7 +46,9 @@ export default function ActivityHistory({
     }
   };
 
-  const selectedDateToString: string = formatDate(selectedDate, "yyyy-MM-dd");
+  const selectedDateToString: string = format(selectedDate, "yyyy-MM-dd", {
+    timeZone: "Asia/Seoul",
+  });
 
   return (
     <div className="space-y-6 mt-4 ">
@@ -77,9 +79,12 @@ export default function ActivityHistory({
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-gray-500">
-                        {formatDate(
+                        {format(
                           activity.createdAt,
-                          "yyyy년 MM월 dd일 hh시 mm분 a"
+                          "yyyy년 MM월 dd일 hh시 mm분 a",
+                          {
+                            timeZone: "Asia/Seoul",
+                          }
                         )}
                       </span>
                       <span className="px-2 py-1 bg-white bg-opacity-80 rounded text-xs font-medium">

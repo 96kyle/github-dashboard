@@ -1,7 +1,8 @@
 "use client";
 
-import { format, startOfMonth, endOfMonth, eachDayOfInterval } from "date-fns";
+import { startOfMonth, endOfMonth, eachDayOfInterval } from "date-fns";
 import { DailyActivityMap } from "@/app/types/activities/activity_type";
+import { format } from "date-fns-tz";
 
 export default function ActivityCalendar({
   data,
@@ -21,7 +22,9 @@ export default function ActivityCalendar({
   const startDay = start.getDay();
 
   const returnColor = (clickDate: Date) => {
-    const formatDate: string = format(clickDate, "yyyy-MM-dd");
+    const formatDate: string = format(clickDate, "yyyy-MM-dd", {
+      timeZone: "Asia/Seoul",
+    });
 
     if (data[formatDate]) {
       if (data[formatDate].length >= 5) {

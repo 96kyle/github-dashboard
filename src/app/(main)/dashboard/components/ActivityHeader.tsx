@@ -1,6 +1,6 @@
 import { LoginButton } from "@/components/LoginButton";
 import { LogoutButton } from "@/components/LogoutButton";
-import { format } from "date-fns";
+import { format } from "date-fns-tz";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useSession } from "next-auth/react";
 
@@ -27,7 +27,9 @@ export default function ActivityHeader({
           onClick={() => moveMonth(true)}
         />
         <div className="text-xl font-semibold text-fontNavy px-2 cursor-pointer border-b-1">
-          {format(selectedDate, "yyyy년 M월")}
+          {format(selectedDate, "yyyy년 M월", {
+            timeZone: "Asia/Seoul",
+          })}
         </div>
 
         <ChevronRight
