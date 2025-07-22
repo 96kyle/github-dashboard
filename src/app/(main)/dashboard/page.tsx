@@ -1,6 +1,10 @@
 import { fetchData } from "@/lib/api/activity_api";
 import DashboardView from "./view";
-import { QueryClient } from "@tanstack/react-query";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
 import { endOfMonth, startOfMonth, subMonths } from "date-fns";
 import { getGitHubContext } from "@/lib/auth/github_auth";
 import { LoginInfo } from "@/app/types/users/user_type";
@@ -34,7 +38,7 @@ export default async function DashboardPage() {
 
   const userInfo: LoginInfo = await getGitHubContext();
 
-  const prevData = await queryClient.prefetchQuery<MergedActivity>({
+  await queryClient.prefetchQuery<MergedActivity>({
     queryKey: ["activity", userInfo.username, prevFrom],
     queryFn: () =>
       fetchData({
@@ -44,7 +48,7 @@ export default async function DashboardPage() {
       }),
   });
 
-  const currData = await queryClient.prefetchQuery<MergedActivity>({
+  await queryClient.prefetchQuery<MergedActivity>({
     queryKey: ["activity", userInfo.username, from],
     queryFn: () =>
       fetchData({
@@ -56,12 +60,9 @@ export default async function DashboardPage() {
 
   return (
     <div>
-      <DashboardView
-        userInfo={userInfo}
-        date={today}
-        initPrevData={prevData!}
-        initCurrData={currData!}
-      />
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <DashboardView userInfo={userInfo} date={today} />
+      </HydrationBoundary>
     </div>
   );
 }

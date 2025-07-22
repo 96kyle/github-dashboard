@@ -7,7 +7,7 @@ import ActivityCount from "./components/ActivityCount";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import DashboardFallbackView from "./fallback/DashboardFallbackView";
-import { useDebounce } from "use-debounce";
+// import { useDebounce } from "use-debounce";
 import { LoginInfo } from "../../types/users/user_type";
 import ActivityHistory from "./components/ActivityHistory";
 import {
@@ -25,22 +25,18 @@ import { MergedActivity } from "@/app/types/activities/activity_type";
 export default function DashboardView({
   userInfo,
   date,
-  initPrevData,
-  initCurrData,
 }: {
   userInfo: LoginInfo;
   date: string;
-  initPrevData: MergedActivity;
-  initCurrData: MergedActivity;
 }) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date(date));
   const [isPending, setIsPending] = useState(false);
-  const [debouncedDate] = useDebounce(selectedDate, 1000);
+  // const [debouncedDate] = useDebounce(selectedDate, 1000);
 
-  const from = startOfMonth(debouncedDate).toISOString();
-  const to = endOfMonth(debouncedDate).toISOString();
+  const from = startOfMonth(selectedDate).toISOString();
+  const to = endOfMonth(selectedDate).toISOString();
 
-  const prevMonth = subMonths(debouncedDate, 1);
+  const prevMonth = subMonths(selectedDate, 1);
   const prevFrom = startOfMonth(prevMonth).toISOString();
   const prevTo = endOfMonth(prevMonth).toISOString();
 
@@ -60,7 +56,6 @@ export default function DashboardView({
         isServer: false,
       }),
     staleTime: 1000 * 60 * 5,
-    initialData: initPrevData,
   });
 
   const {
@@ -77,12 +72,11 @@ export default function DashboardView({
       }),
 
     staleTime: 1000 * 60 * 5,
-    initialData: initCurrData,
   });
 
-  useEffect(() => {
-    setSelectedDate(debouncedDate);
-  }, [debouncedDate]);
+  // useEffect(() => {
+  //   setSelectedDate(debouncedDate);
+  // }, [debouncedDate]);
 
   useEffect(() => {
     if (!prevFetching && !currentFetching) setIsPending(false);
