@@ -21,6 +21,7 @@ import ActivityLineChart from "./components/ActivityLineChart";
 import { useInView } from "react-intersection-observer";
 import ActivityBarChart from "./components/ActivityBarChart";
 import { MergedActivity } from "@/app/types/activities/activity_type";
+import { toZonedTime } from "date-fns-tz";
 
 export default function DashboardView({
   userInfo,
@@ -29,7 +30,9 @@ export default function DashboardView({
   userInfo: LoginInfo;
   date: Date;
 }) {
-  const [selectedDate, setSelectedDate] = useState<Date>(date);
+  const [selectedDate, setSelectedDate] = useState<Date>(
+    toZonedTime(date, "Asia/Seoul")
+  );
   const [isPending, setIsPending] = useState(false);
   const [debouncedDate] = useDebounce(selectedDate, 1000);
 
@@ -44,7 +47,7 @@ export default function DashboardView({
   const [shouldRenderChart, setShouldRenderChart] = useState(false);
 
   const { data: prevData, isLoading: prevLoading } = useQuery<MergedActivity>({
-    queryKey: ["activity", userInfo.username, prevFrom],
+    queryKey: ["activity", userInfo.username, prevFrom.substring(0, 10)],
     queryFn: () =>
       fetchData({
         from: prevFrom,
@@ -56,7 +59,7 @@ export default function DashboardView({
 
   const { data: currentData, isLoading: currentLoading } =
     useQuery<MergedActivity>({
-      queryKey: ["activity", userInfo.username, from],
+      queryKey: ["activity", userInfo.username, from.substring(0, 10)],
       queryFn: () =>
         fetchData({
           from,
