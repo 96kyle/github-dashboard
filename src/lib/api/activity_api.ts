@@ -328,14 +328,10 @@ export const serverFetch = async ({
   from: string;
   to: string;
 }): Promise<MergedActivity> => {
-  console.log("서버 패치 실행?");
-
   const { username, token } = await getGitHubContext();
 
   const commitMap = await getAllCommits({ username, from, to, token });
   const activityMap = await getActivities({ username, from, to, token });
-
-  console.log(activityMap);
 
   const merged: DailyActivityMap = {};
   const totalCount: Record<ActivityType, number> = {
@@ -371,7 +367,7 @@ export const clientFetch = async ({
 }: {
   from: string;
   to: string;
-}) => {
+}): Promise<MergedActivity> => {
   console.log("클라 패치 실행?");
 
   const res = await fetch("/api/github/activity", {
@@ -381,7 +377,12 @@ export const clientFetch = async ({
   });
 
   if (!res.ok) throw new Error("클라이언트 요청 실패");
-  return await res.json();
+
+  const data = await res.json();
+
+  console.log(data);
+
+  return data;
 };
 
 export const fetchData = async ({
