@@ -2,7 +2,7 @@
 
 import { startOfMonth, endOfMonth, eachDayOfInterval } from "date-fns";
 import { DailyActivityMap } from "@/app/types/activities/activity_type";
-import { format } from "date-fns-tz";
+import { format, toZonedTime } from "date-fns-tz";
 
 export default function ActivityCalendar({
   data,
@@ -15,8 +15,8 @@ export default function ActivityCalendar({
   selectedDate: Date;
   setSelectedDate: React.Dispatch<React.SetStateAction<Date>>;
 }) {
-  const start = startOfMonth(selectedDate);
-  const end = endOfMonth(selectedDate);
+  const start = toZonedTime(startOfMonth(selectedDate), "Asia/Seoul");
+  const end = toZonedTime(endOfMonth(selectedDate), "Asia/Seoul");
   const monthDays = eachDayOfInterval({ start, end });
 
   const startDay = start.getDay();
@@ -73,7 +73,7 @@ export default function ActivityCalendar({
           return (
             <button
               key={index}
-              onClick={() => setSelectedDate(day)}
+              onClick={() => setSelectedDate(toZonedTime(day, "Asia/Seoul"))}
               className={`
                           h-12 rounded-lg border-2 transition-all duration-200 text-base font-medium flex items-center justify-center cursor-pointer
                           ${

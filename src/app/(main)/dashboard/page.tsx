@@ -65,13 +65,7 @@ export default async function DashboardPage() {
   return (
     <div>
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <DashboardView
-          userInfo={userInfo}
-          prevFrom={prevFrom}
-          prevTo={prevTo}
-          from={from}
-          to={to}
-        />
+        <DashboardView userInfo={userInfo} date={today} />
       </HydrationBoundary>
     </div>
   );
