@@ -260,22 +260,19 @@ export const getActivities = async ({
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     json.data.search.nodes.forEach((node: any) => {
-      const korDate = new Date(node.createdAt);
-      const searchDate = new Date(from);
+      // const korDate = new Date(node.createdAt);
+      // const searchDate = new Date(from);
 
-      const date = `${korDate.getFullYear()}-${(korDate.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}-${korDate.getDate().toString().padStart(2, "0")}`;
+      // const date = `${korDate.getFullYear()}-${(korDate.getMonth() + 1)
+      //   .toString()
+      //   .padStart(2, "0")}-${korDate.getDate().toString().padStart(2, "0")}`;
       const type = node.url.includes("/pull/") ? "pr" : "issue";
       const repo = `${node.repository.owner.login}/${node.repository.name}`;
 
-      if (
-        node.author.login === username &&
-        korDate.getMonth() === searchDate.getMonth()
-      ) {
-        if (!result[date]) result[date] = [];
+      if (node.author.login === username) {
+        if (!result["2025-07-12"]) result["2025-07-12"] = [];
 
-        result[date].push({
+        result["2025-07-12"].push({
           title: node.title,
           url: node.url,
           createdAt: node.createdAt,
@@ -292,26 +289,23 @@ export const getActivities = async ({
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     reviews.forEach((review: any) => {
-      const korDate = new Date(review.occurredAt);
-      const searchDate = new Date(from);
-
-      const date = `${korDate.getFullYear()}-${(korDate.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}-${korDate.getDate().toString().padStart(2, "0")}`;
-
-      const repo = `${review.pullRequest.repository.owner.login}/${review.pullRequest.repository.name}`;
-
-      if (korDate.getMonth() === searchDate.getMonth()) {
-        if (!result[date]) result[date] = [];
-        result[date].push({
-          title: review.pullRequest.title,
-          url: review.pullRequest.url,
-          createdAt: review.occurredAt,
-          type: "review",
-          state: review.pullRequest.state,
-          repo,
-        });
-      }
+      // const korDate = new Date(review.occurredAt);
+      // const searchDate = new Date(from);
+      // const date = `${korDate.getFullYear()}-${(korDate.getMonth() + 1)
+      //   .toString()
+      //   .padStart(2, "0")}-${korDate.getDate().toString().padStart(2, "0")}`;
+      // const repo = `${review.pullRequest.repository.owner.login}/${review.pullRequest.repository.name}`;
+      // if (korDate.getMonth() === searchDate.getMonth()) {
+      //   if (!result[date]) result[date] = [];
+      //   result[date].push({
+      //     title: review.pullRequest.title,
+      //     url: review.pullRequest.url,
+      //     createdAt: review.occurredAt,
+      //     type: "review",
+      //     state: review.pullRequest.state,
+      //     repo,
+      //   });
+      // }
     });
 
     return result;
