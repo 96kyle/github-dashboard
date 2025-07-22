@@ -11,9 +11,8 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
-    console.log("클라 패치 실행");
-    const data = await serverFetch({ from, to, isServer: true });
-    console.log(data);
+
+    const data = await serverFetch({ from, to });
 
     return NextResponse.json(data, { status: 200 });
   } catch (e) {

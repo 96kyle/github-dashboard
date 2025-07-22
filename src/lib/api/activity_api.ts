@@ -324,20 +324,16 @@ export const getActivities = async ({
 export const serverFetch = async ({
   from,
   to,
-  isServer,
 }: {
   from: string;
   to: string;
-  isServer?: boolean;
 }): Promise<MergedActivity> => {
   const { username, token } = await getGitHubContext();
 
   const commitMap = await getAllCommits({ username, from, to, token });
+  console.log(commitMap);
   const activityMap = await getActivities({ username, from, to, token });
-
-  if (isServer) {
-    console.log(activityMap);
-  }
+  console.log(activityMap);
 
   const merged: DailyActivityMap = {};
   const totalCount: Record<ActivityType, number> = {
