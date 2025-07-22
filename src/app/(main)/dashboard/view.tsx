@@ -25,9 +25,13 @@ import { MergedActivity } from "@/app/types/activities/activity_type";
 export default function DashboardView({
   userInfo,
   date,
+  initPrevData,
+  initCurrData,
 }: {
   userInfo: LoginInfo;
   date: string;
+  initPrevData: MergedActivity;
+  initCurrData: MergedActivity;
 }) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date(date));
   const [isPending, setIsPending] = useState(false);
@@ -55,6 +59,7 @@ export default function DashboardView({
         to: prevTo,
       }),
     staleTime: 1000 * 60 * 5,
+    initialData: initPrevData,
   });
 
   const {
@@ -70,6 +75,7 @@ export default function DashboardView({
       }),
 
     staleTime: 1000 * 60 * 5,
+    initialData: initCurrData,
   });
 
   useEffect(() => {

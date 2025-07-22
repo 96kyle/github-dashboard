@@ -38,7 +38,7 @@ export default async function DashboardPage() {
 
   const userInfo: LoginInfo = await getGitHubContext();
 
-  await queryClient.prefetchQuery<MergedActivity>({
+  const prevData = await queryClient.prefetchQuery<MergedActivity>({
     queryKey: ["activity", userInfo.username, prevFrom],
     queryFn: () =>
       fetchData({
@@ -47,7 +47,7 @@ export default async function DashboardPage() {
       }),
   });
 
-  await queryClient.prefetchQuery<MergedActivity>({
+  const currData = await queryClient.prefetchQuery<MergedActivity>({
     queryKey: ["activity", userInfo.username, from],
     queryFn: () =>
       fetchData({
@@ -58,9 +58,12 @@ export default async function DashboardPage() {
 
   return (
     <div>
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <DashboardView userInfo={userInfo} date={today} />
-      </HydrationBoundary>
+      <DashboardView
+        userInfo={userInfo}
+        date={today}
+        initPrevData={prevData!}
+        initCurrData={currData!}
+      />
     </div>
   );
 }
