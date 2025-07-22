@@ -235,7 +235,7 @@ export const getActivities = async ({
     const res = await fetch(GITHUB_API_GRAPH, {
       method: "POST",
       headers: {
-        Authorization: `token ${token}`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
