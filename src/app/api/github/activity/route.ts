@@ -5,8 +5,6 @@ export async function POST(req: Request) {
   try {
     const { from, to } = await req.json();
 
-    console.log(from + to);
-
     if (!from || !to) {
       return NextResponse.json(
         { error: "Invalid 'from' or 'to' field" },

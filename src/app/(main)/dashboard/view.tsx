@@ -43,11 +43,7 @@ export default function DashboardView({
   const { ref, inView } = useInView({ threshold: 0.1 });
   const [shouldRenderChart, setShouldRenderChart] = useState(false);
 
-  const {
-    data: prevData,
-    isLoading: prevLoading,
-    isFetching: prevFetching,
-  } = useQuery<MergedActivity>({
+  const { data: prevData, isLoading: prevLoading } = useQuery<MergedActivity>({
     queryKey: ["activity", userInfo.username, prevFrom],
     queryFn: () =>
       fetchData({
@@ -58,29 +54,26 @@ export default function DashboardView({
     staleTime: 1000 * 60 * 5,
   });
 
-  const {
-    data: currentData,
-    isLoading: currentLoading,
-    isFetching: currentFetching,
-  } = useQuery<MergedActivity>({
-    queryKey: ["activity", userInfo.username, from],
-    queryFn: () =>
-      fetchData({
-        from,
-        to,
-        isServer: false,
-      }),
+  const { data: currentData, isLoading: currentLoading } =
+    useQuery<MergedActivity>({
+      queryKey: ["activity", userInfo.username, from],
+      queryFn: () =>
+        fetchData({
+          from,
+          to,
+          isServer: false,
+        }),
 
-    staleTime: 1000 * 60 * 5,
-  });
+      staleTime: 1000 * 60 * 5,
+    });
 
   useEffect(() => {
     setSelectedDate(debouncedDate);
   }, [debouncedDate]);
 
   useEffect(() => {
-    if (!prevFetching && !currentFetching) setIsPending(false);
-  }, [prevData, currentData, prevFetching, currentFetching]);
+    if (!prevLoading && !currentLoading) setIsPending(false);
+  }, [prevData, currentData, prevLoading, currentLoading]);
 
   useEffect(() => {
     if (inView) {

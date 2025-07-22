@@ -18,7 +18,7 @@ export default function ActivityHeader({
   return (
     <div className="w-full bg-white p-4 text-xl  border-b-2 border-gray-300 text-fontNavy flex flex-row justify-between items-center sticky top-0 z-50 ">
       <div>
-        <span>{`${username}'s Dashboard`}</span>
+        <span>{`${username}님의 Dashboard`}</span>
       </div>
       <div className="flex flex-row items-center justify-center">
         <ChevronLeft
