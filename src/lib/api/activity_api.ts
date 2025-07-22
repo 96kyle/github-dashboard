@@ -231,89 +231,94 @@ export const getActivities = async ({
   const q = `involves:${username} created:${from.split("T")[0]}..${
     to.split("T")[0]
   }`;
-
-  const res = await fetch(GITHUB_API_GRAPH, {
-    method: "POST",
-    headers: {
-      Authorization: `token ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      query,
-      variables: {
-        username,
-        queryString: q,
-        from,
-        to,
+  try {
+    const res = await fetch(GITHUB_API_GRAPH, {
+      method: "POST",
+      headers: {
+        Authorization: `token ${token}`,
+        "Content-Type": "application/json",
       },
-    }),
-  });
+      body: JSON.stringify({
+        query,
+        variables: {
+          username,
+          queryString: q,
+          from,
+          to,
+        },
+      }),
+    });
 
-  const json = await res.json();
+    const json = await res.json();
 
-  if (json.errors) {
-    console.error("GraphQL Error:", json.errors);
-    throw new Error("GraphQL query failed");
+    if (json.errors) {
+      console.error("GraphQL Error:", json.errors);
+      throw new Error("GraphQL query failed");
+    }
+
+    const result: DailyActivityMap = {};
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    json.data.search.nodes.forEach((node: any) => {
+      const korDate = new Date(node.createdAt);
+      const searchDate = new Date(from);
+
+      const date = `${korDate.getFullYear()}-${(korDate.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}-${korDate.getDate().toString().padStart(2, "0")}`;
+      const type = node.url.includes("/pull/") ? "pr" : "issue";
+      const repo = `${node.repository.owner.login}/${node.repository.name}`;
+
+      if (
+        node.author.login === username &&
+        korDate.getMonth() === searchDate.getMonth()
+      ) {
+        if (!result[date]) result[date] = [];
+
+        result[date].push({
+          title: node.title,
+          url: node.url,
+          createdAt: node.createdAt,
+          type,
+          state: node.state,
+          repo,
+        });
+      }
+    });
+
+    const reviews =
+      json.data.user.contributionsCollection.pullRequestReviewContributions
+        .nodes;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    reviews.forEach((review: any) => {
+      const korDate = new Date(review.occurredAt);
+      const searchDate = new Date(from);
+
+      const date = `${korDate.getFullYear()}-${(korDate.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}-${korDate.getDate().toString().padStart(2, "0")}`;
+
+      const repo = `${review.pullRequest.repository.owner.login}/${review.pullRequest.repository.name}`;
+
+      if (korDate.getMonth() === searchDate.getMonth()) {
+        if (!result[date]) result[date] = [];
+        result[date].push({
+          title: review.pullRequest.title,
+          url: review.pullRequest.url,
+          createdAt: review.occurredAt,
+          type: "review",
+          state: review.pullRequest.state,
+          repo,
+        });
+      }
+    });
+
+    return result;
+  } catch (e) {
+    console.error(e);
+    return {};
   }
-
-  const result: DailyActivityMap = {};
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  json.data.search.nodes.forEach((node: any) => {
-    const korDate = new Date(node.createdAt);
-    const searchDate = new Date(from);
-
-    const date = `${korDate.getFullYear()}-${(korDate.getMonth() + 1)
-      .toString()
-      .padStart(2, "0")}-${korDate.getDate().toString().padStart(2, "0")}`;
-    const type = node.url.includes("/pull/") ? "pr" : "issue";
-    const repo = `${node.repository.owner.login}/${node.repository.name}`;
-
-    if (
-      node.author.login === username &&
-      korDate.getMonth() === searchDate.getMonth()
-    ) {
-      if (!result[date]) result[date] = [];
-
-      result[date].push({
-        title: node.title,
-        url: node.url,
-        createdAt: node.createdAt,
-        type,
-        state: node.state,
-        repo,
-      });
-    }
-  });
-
-  const reviews =
-    json.data.user.contributionsCollection.pullRequestReviewContributions.nodes;
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  reviews.forEach((review: any) => {
-    const korDate = new Date(review.occurredAt);
-    const searchDate = new Date(from);
-
-    const date = `${korDate.getFullYear()}-${(korDate.getMonth() + 1)
-      .toString()
-      .padStart(2, "0")}-${korDate.getDate().toString().padStart(2, "0")}`;
-
-    const repo = `${review.pullRequest.repository.owner.login}/${review.pullRequest.repository.name}`;
-
-    if (korDate.getMonth() === searchDate.getMonth()) {
-      if (!result[date]) result[date] = [];
-      result[date].push({
-        title: review.pullRequest.title,
-        url: review.pullRequest.url,
-        createdAt: review.occurredAt,
-        type: "review",
-        state: review.pullRequest.state,
-        repo,
-      });
-    }
-  });
-
-  return result;
 };
 
 export const serverFetch = async ({

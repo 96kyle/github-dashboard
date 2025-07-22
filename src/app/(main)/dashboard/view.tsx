@@ -43,31 +43,36 @@ export default function DashboardView({
   const { ref, inView } = useInView({ threshold: 0.1 });
   const [shouldRenderChart, setShouldRenderChart] = useState(false);
 
-  const { data: prevData, isFetching: prevFetching } = useQuery<MergedActivity>(
-    {
-      queryKey: ["activity", userInfo.username, prevFrom],
-      queryFn: () =>
-        fetchData({
-          from: prevFrom,
-          to: prevTo,
-          isServer: false,
-        }),
-      staleTime: 1000 * 60 * 5,
-    }
-  );
+  const {
+    data: prevData,
+    isLoading: prevLoading,
+    isFetching: prevFetching,
+  } = useQuery<MergedActivity>({
+    queryKey: ["activity", userInfo.username, prevFrom],
+    queryFn: () =>
+      fetchData({
+        from: prevFrom,
+        to: prevTo,
+        isServer: false,
+      }),
+    staleTime: 1000 * 60 * 5,
+  });
 
-  const { data: currentData, isFetching: currentFetching } =
-    useQuery<MergedActivity>({
-      queryKey: ["activity", userInfo.username, from],
-      queryFn: () =>
-        fetchData({
-          from,
-          to,
-          isServer: false,
-        }),
+  const {
+    data: currentData,
+    isLoading: currentLoading,
+    isFetching: currentFetching,
+  } = useQuery<MergedActivity>({
+    queryKey: ["activity", userInfo.username, from],
+    queryFn: () =>
+      fetchData({
+        from,
+        to,
+        isServer: false,
+      }),
 
-      staleTime: 1000 * 60 * 5,
-    });
+    staleTime: 1000 * 60 * 5,
+  });
 
   useEffect(() => {
     setSelectedDate(debouncedDate);
@@ -101,7 +106,7 @@ export default function DashboardView({
         selectedDate={selectedDate}
       />
       <div className="w-full p-6 max-w-[1300px] self-center">
-        {isPending ? (
+        {prevLoading || currentLoading || isPending ? (
           <DashboardFallbackView />
         ) : (
           <>
