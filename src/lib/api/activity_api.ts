@@ -283,30 +283,30 @@ export const getActivities = async ({
       }
     });
 
-    const reviews =
-      json.data.user.contributionsCollection.pullRequestReviewContributions
-        .nodes;
+    // const reviews =
+    //   json.data.user.contributionsCollection.pullRequestReviewContributions
+    //     .nodes;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    reviews.forEach((review: any) => {
-      // const korDate = new Date(review.occurredAt);
-      // const searchDate = new Date(from);
-      // const date = `${korDate.getFullYear()}-${(korDate.getMonth() + 1)
-      //   .toString()
-      //   .padStart(2, "0")}-${korDate.getDate().toString().padStart(2, "0")}`;
-      // const repo = `${review.pullRequest.repository.owner.login}/${review.pullRequest.repository.name}`;
-      // if (korDate.getMonth() === searchDate.getMonth()) {
-      //   if (!result[date]) result[date] = [];
-      //   result[date].push({
-      //     title: review.pullRequest.title,
-      //     url: review.pullRequest.url,
-      //     createdAt: review.occurredAt,
-      //     type: "review",
-      //     state: review.pullRequest.state,
-      //     repo,
-      //   });
-      // }
-    });
+    // reviews.forEach((review: any) => {
+    // const korDate = new Date(review.occurredAt);
+    // const searchDate = new Date(from);
+    // const date = `${korDate.getFullYear()}-${(korDate.getMonth() + 1)
+    //   .toString()
+    //   .padStart(2, "0")}-${korDate.getDate().toString().padStart(2, "0")}`;
+    // const repo = `${review.pullRequest.repository.owner.login}/${review.pullRequest.repository.name}`;
+    // if (korDate.getMonth() === searchDate.getMonth()) {
+    //   if (!result[date]) result[date] = [];
+    //   result[date].push({
+    //     title: review.pullRequest.title,
+    //     url: review.pullRequest.url,
+    //     createdAt: review.occurredAt,
+    //     type: "review",
+    //     state: review.pullRequest.state,
+    //     repo,
+    //   });
+    // }
+    // });
 
     return result;
   } catch (e) {
