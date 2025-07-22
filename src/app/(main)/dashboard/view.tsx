@@ -6,7 +6,7 @@ import { addMonths, endOfMonth, startOfMonth, subMonths } from "date-fns";
 import ActivityCount from "./components/ActivityCount";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import DashboardFallbackView from "./fallback/DashboardFallbackView";
+// import DashboardFallbackView from "./fallback/DashboardFallbackView";
 import { useDebounce } from "use-debounce";
 import { LoginInfo } from "../../types/users/user_type";
 // import ActivityHistory from "./components/ActivityHistory";
@@ -30,7 +30,7 @@ export default function DashboardView({
   date: Date;
 }) {
   const [selectedDate, setSelectedDate] = useState<Date>(date);
-  const [isPending, setIsPending] = useState(false);
+  // const [isPending, setIsPending] = useState(false);
   const [debouncedDate] = useDebounce(selectedDate, 1000);
 
   const from = startOfMonth(debouncedDate).toISOString();
@@ -43,7 +43,7 @@ export default function DashboardView({
   const { ref, inView } = useInView({ threshold: 0.1 });
   const [shouldRenderChart, setShouldRenderChart] = useState(false);
 
-  const { data: prevData, isLoading: prevLoading } = useQuery<MergedActivity>({
+  const { data: prevData } = useQuery<MergedActivity>({
     queryKey: ["activity", userInfo.username, prevFrom],
     queryFn: () =>
       fetchData({
@@ -54,18 +54,17 @@ export default function DashboardView({
     staleTime: 1000 * 60 * 5,
   });
 
-  const { data: currentData, isLoading: currentLoading } =
-    useQuery<MergedActivity>({
-      queryKey: ["activity", userInfo.username, from],
-      queryFn: () =>
-        fetchData({
-          from,
-          to,
-          isServer: false,
-        }),
+  const { data: currentData } = useQuery<MergedActivity>({
+    queryKey: ["activity", userInfo.username, from],
+    queryFn: () =>
+      fetchData({
+        from,
+        to,
+        isServer: false,
+      }),
 
-      staleTime: 1000 * 60 * 5,
-    });
+    staleTime: 1000 * 60 * 5,
+  });
 
   useEffect(() => {
     setSelectedDate(debouncedDate);
@@ -82,7 +81,6 @@ export default function DashboardView({
   }, [inView]);
 
   const moveMonth = async (isPrev: boolean) => {
-    setIsPending(true);
     setShouldRenderChart(false);
     if (isPrev) {
       setSelectedDate(startOfMonth(subMonths(selectedDate, 1)));
@@ -99,41 +97,41 @@ export default function DashboardView({
         selectedDate={selectedDate}
       />
       <div className="w-full p-6 max-w-[1300px] self-center">
-        {prevLoading || currentLoading || isPending ? (
+        {/* {prevLoading || currentLoading || isPending ? (
           <DashboardFallbackView />
-        ) : (
-          <>
-            <div className="flex flex-row mb-4 gap-6">
-              <ActivityCount
-                count={currentData?.totalCount.commit ?? 0}
-                title="Commits"
-                Icon={GitCommit}
-                iconColor="text-green-600"
-                beforeCount={prevData?.totalCount.commit ?? 0}
-              />
-              <ActivityCount
-                count={currentData?.totalCount.issue ?? 0}
-                title="Issues"
-                Icon={AlertCircle}
-                iconColor="text-gray-600"
-                beforeCount={prevData?.totalCount.issue ?? 0}
-              />
-              <ActivityCount
-                count={currentData?.totalCount.pr ?? 0}
-                title="PRs"
-                Icon={GitPullRequest}
-                iconColor="text-blue-600"
-                beforeCount={prevData?.totalCount.pr ?? 0}
-              />
-              <ActivityCount
-                count={currentData?.totalCount.review ?? 0}
-                title="PR Reveiws"
-                Icon={MessageSquare}
-                iconColor="text-purple-600"
-                beforeCount={prevData?.totalCount.review ?? 0}
-              />
-            </div>
-            {/* <ActivityCalendar
+        ) : ( */}
+        <>
+          <div className="flex flex-row mb-4 gap-6">
+            <ActivityCount
+              count={currentData?.totalCount.commit ?? 0}
+              title="Commits"
+              Icon={GitCommit}
+              iconColor="text-green-600"
+              beforeCount={prevData?.totalCount.commit ?? 0}
+            />
+            <ActivityCount
+              count={currentData?.totalCount.issue ?? 0}
+              title="Issues"
+              Icon={AlertCircle}
+              iconColor="text-gray-600"
+              beforeCount={prevData?.totalCount.issue ?? 0}
+            />
+            <ActivityCount
+              count={currentData?.totalCount.pr ?? 0}
+              title="PRs"
+              Icon={GitPullRequest}
+              iconColor="text-blue-600"
+              beforeCount={prevData?.totalCount.pr ?? 0}
+            />
+            <ActivityCount
+              count={currentData?.totalCount.review ?? 0}
+              title="PR Reveiws"
+              Icon={MessageSquare}
+              iconColor="text-purple-600"
+              beforeCount={prevData?.totalCount.review ?? 0}
+            />
+          </div>
+          {/* <ActivityCalendar
               data={currentData!.map}
               count={
                 (currentData?.totalCount.commit ?? 0) +
@@ -145,28 +143,29 @@ export default function DashboardView({
               setSelectedDate={setSelectedDate}
             /> */}
 
-            {/* <ActivityHistory
+          {/* <ActivityHistory
               items={currentData?.map ?? {}}
               selectedDate={selectedDate}
             /> */}
-            <div ref={ref} className="flex flex-row gap-6 mt-4">
-              <ActivityLineChart
-                today={new Date(date)}
-                selectedDate={selectedDate}
-                prevActivity={prevData!}
-                currentActivity={currentData!}
-                shouldRenderChart={shouldRenderChart}
-              />
-              <ActivityBarChart
-                today={new Date(date)}
-                prevActivity={prevData?.map ?? {}}
-                currActivity={currentData?.map ?? {}}
-                selectedDate={selectedDate}
-                shouldRenderChart={shouldRenderChart}
-              />
-            </div>
-          </>
-        )}
+          <div ref={ref} className="flex flex-row gap-6 mt-4">
+            <ActivityLineChart
+              today={new Date(date)}
+              selectedDate={selectedDate}
+              prevActivity={prevData!}
+              currentActivity={currentData!}
+              shouldRenderChart={shouldRenderChart}
+            />
+            <ActivityBarChart
+              today={new Date(date)}
+              prevActivity={prevData?.map ?? {}}
+              currActivity={currentData?.map ?? {}}
+              selectedDate={selectedDate}
+              shouldRenderChart={shouldRenderChart}
+            />
+          </div>
+        </>
+        {/* ) */}
+        {/* } */}
       </div>
     </div>
   );
