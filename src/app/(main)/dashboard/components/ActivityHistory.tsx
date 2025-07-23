@@ -81,7 +81,7 @@ export default function ActivityHistory({
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-gray-500">
                         {format(
-                          activity.createdAt,
+                          new Date(activity.createdAt),
                           "yyyy년 MM월 dd일 hh시 mm분 a",
                           {
                             timeZone: "Asia/Seoul",
