@@ -20,7 +20,8 @@ import ActivityLineChart from "./components/ActivityLineChart";
 import { useInView } from "react-intersection-observer";
 import ActivityBarChart from "./components/ActivityBarChart";
 import { MergedActivity } from "@/app/types/activities/activity_type";
-import { addMonths, endOfMonth, startOfMonth, subMonths } from "date-fns";
+import { addMonths, subMonths } from "date-fns";
+import { endOfMonthUTC, startOfMonthUTC } from "@/app/util/date_util";
 
 export default function DashboardView({
   userInfo,
@@ -29,16 +30,18 @@ export default function DashboardView({
   userInfo: LoginInfo;
   date: string;
 }) {
-  const [selectedDate, setSelectedDate] = useState<string>(date);
+  const [selectedDate, setSelectedDate] = useState<string>(
+    new Date(date).toISOString()
+  );
   const [isPending, setIsPending] = useState(false);
   const [debouncedDate] = useDebounce(selectedDate, 1000);
 
-  const from = startOfMonth(debouncedDate).toISOString();
-  const to = endOfMonth(debouncedDate).toISOString();
+  const from = startOfMonthUTC(debouncedDate).toISOString();
+  const to = endOfMonthUTC(debouncedDate).toISOString();
 
   const prevMonth = subMonths(debouncedDate, 1);
-  const prevFrom = startOfMonth(prevMonth).toISOString();
-  const prevTo = endOfMonth(prevMonth).toISOString();
+  const prevFrom = startOfMonthUTC(prevMonth).toISOString();
+  const prevTo = endOfMonthUTC(prevMonth).toISOString();
 
   const { ref, inView } = useInView({ threshold: 0.1 });
   const [shouldRenderChart, setShouldRenderChart] = useState(false);
@@ -68,7 +71,10 @@ export default function DashboardView({
     });
 
   useEffect(() => {
-    console.log("client today" + selectedDate);
+    console.log("client from" + from);
+    console.log("client to" + to);
+    console.log("client prevfrom" + prevFrom);
+    console.log("client to" + prevTo);
   }, []);
 
   useEffect(() => {
@@ -89,9 +95,13 @@ export default function DashboardView({
     setIsPending(true);
     setShouldRenderChart(false);
     if (isPrev) {
-      setSelectedDate(startOfMonth(subMonths(selectedDate, 1)).toISOString());
+      setSelectedDate(
+        startOfMonthUTC(subMonths(selectedDate, 1)).toISOString()
+      );
     } else {
-      setSelectedDate(startOfMonth(addMonths(selectedDate, 1)).toISOString());
+      setSelectedDate(
+        startOfMonthUTC(addMonths(selectedDate, 1)).toISOString()
+      );
     }
   };
 

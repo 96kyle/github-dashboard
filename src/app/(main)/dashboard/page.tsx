@@ -5,12 +5,13 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-import { endOfMonth, startOfMonth, subMonths } from "date-fns";
+import { subMonths } from "date-fns";
 import { getGitHubContext } from "@/lib/auth/github_auth";
 import { LoginInfo } from "@/app/types/users/user_type";
 import { Metadata } from "next";
 import { MergedActivity } from "@/app/types/activities/activity_type";
 import DashboardView from "./view";
+import { endOfMonthUTC, startOfMonthUTC } from "@/app/util/date_util";
 // import DashboardView from "./view";
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -30,14 +31,17 @@ export const metadata: Metadata = {
 export default async function DashboardPage() {
   const today = new Date();
 
-  const from = startOfMonth(today).toISOString();
-  const to = endOfMonth(today).toISOString();
+  const from = startOfMonthUTC(today).toISOString();
+  const to = endOfMonthUTC(today).toISOString();
 
   const prevMonth = subMonths(today, 1);
-  const prevFrom = startOfMonth(prevMonth).toISOString();
-  const prevTo = endOfMonth(prevMonth).toISOString();
+  const prevFrom = startOfMonthUTC(prevMonth).toISOString();
+  const prevTo = endOfMonthUTC(prevMonth).toISOString();
 
-  console.log("server today" + today);
+  console.log("server from" + from);
+  console.log("server to" + to);
+  console.log("server prevfrom" + prevFrom);
+  console.log("server to" + prevTo);
 
   const queryClient = new QueryClient();
 
