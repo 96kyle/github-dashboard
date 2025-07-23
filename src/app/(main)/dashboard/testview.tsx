@@ -4,11 +4,11 @@ import { fetchData } from "@/lib/api/activity_api";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import DashboardFallbackView from "./fallback/DashboardFallbackView";
+import { useDebounce } from "use-debounce";
 import { LoginInfo } from "../../types/users/user_type";
 
-import ActivityHeader from "./components/ActivityHeader";
 import { MergedActivity } from "@/app/types/activities/activity_type";
-import { addMonths, endOfMonth, startOfMonth, subMonths } from "date-fns";
+import { endOfMonth, startOfMonth, subMonths } from "date-fns";
 
 export default function TestView({
   userInfo,
@@ -19,11 +19,12 @@ export default function TestView({
 }) {
   const [selectedDate, setSelectedDate] = useState<string>(date);
   const [isPending, setIsPending] = useState(false);
+  const [debouncedDate] = useDebounce(selectedDate, 1000);
 
-  const from = startOfMonth(selectedDate).toISOString();
-  const to = endOfMonth(selectedDate).toISOString();
+  const from = startOfMonth(debouncedDate).toISOString();
+  const to = endOfMonth(debouncedDate).toISOString();
 
-  const prevMonth = subMonths(selectedDate, 1);
+  const prevMonth = subMonths(debouncedDate, 1);
   const prevFrom = startOfMonth(prevMonth).toISOString();
   const prevTo = endOfMonth(prevMonth).toISOString();
 
@@ -52,25 +53,29 @@ export default function TestView({
     });
 
   useEffect(() => {
+    setSelectedDate(debouncedDate);
+  }, [debouncedDate]);
+
+  useEffect(() => {
     if (!prevLoading && !currentLoading) setIsPending(false);
   }, [prevData, currentData, prevLoading, currentLoading]);
 
-  const moveMonth = async (isPrev: boolean) => {
-    setIsPending(true);
-    if (isPrev) {
-      setSelectedDate(startOfMonth(subMonths(selectedDate, 1)).toISOString());
-    } else {
-      setSelectedDate(startOfMonth(addMonths(selectedDate, 1)).toISOString());
-    }
-  };
+  // const moveMonth = async (isPrev: boolean) => {
+  //   setIsPending(true);
+  //   if (isPrev) {
+  //     setSelectedDate(startOfMonth(subMonths(selectedDate, 1)).toISOString());
+  //   } else {
+  //     setSelectedDate(startOfMonth(addMonths(selectedDate, 1)).toISOString());
+  //   }
+  // };
 
   return (
     <div className="flex flex-col items-center">
-      <ActivityHeader
+      {/* <ActivityHeader
         username={userInfo.username}
         moveMonth={moveMonth}
         selectedDate={selectedDate}
-      />
+      /> */}
       <div className="w-full p-6 max-w-[1300px] self-center">
         {prevLoading || currentLoading || isPending ? (
           <DashboardFallbackView />
