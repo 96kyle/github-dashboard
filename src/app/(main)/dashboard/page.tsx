@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
-  const today = new Date(2025, 6, 23);
+  const today = new Date();
 
   const from = startOfMonth(today).toISOString();
   const to = endOfMonth(today).toISOString();
@@ -36,6 +36,11 @@ export default async function DashboardPage() {
   const prevMonth = subMonths(today, 1);
   const prevFrom = startOfMonth(prevMonth).toISOString();
   const prevTo = endOfMonth(prevMonth).toISOString();
+
+  console.log("from date" + from);
+  console.log("to date" + to);
+  console.log("prevfrom date" + prevFrom);
+  console.log("prevto date" + prevTo);
 
   const queryClient = new QueryClient();
 
