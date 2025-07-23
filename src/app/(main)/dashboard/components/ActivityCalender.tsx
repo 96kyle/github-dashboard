@@ -20,9 +20,10 @@ export default function ActivityCalendar({
   const end = endOfMonthUTC(selectedDate);
   const monthDays = eachDayOfInterval({ start, end });
 
-  console.log(end);
-
-  const startDay = Number(formatKorean(start.toISOString(), "e"));
+  const startDay =
+    Number(formatKorean(start.toISOString(), "e")) === 7
+      ? 0
+      : Number(formatKorean(start.toISOString(), "e")) - 1;
 
   const returnColor = (clickDate: Date) => {
     const formatDate: string = formatKorean(
