@@ -11,7 +11,6 @@ import { LoginInfo } from "@/app/types/users/user_type";
 import { Metadata } from "next";
 import { MergedActivity } from "@/app/types/activities/activity_type";
 import DashboardView from "./view";
-import { endOfMonthUTC, startOfMonthUTC } from "@/app/util/date_util";
 // import DashboardView from "./view";
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
