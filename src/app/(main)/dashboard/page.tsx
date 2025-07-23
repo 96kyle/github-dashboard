@@ -31,12 +31,12 @@ export const metadata: Metadata = {
 export default async function DashboardPage() {
   const today = new Date();
 
-  const from = startOfMonthUTC(today).toISOString();
-  const to = endOfMonthUTC(today).toISOString();
+  const from = today.toISOString();
+  const to = today.toISOString();
 
   const prevMonth = subMonths(today, 1);
-  const prevFrom = startOfMonthUTC(prevMonth).toISOString();
-  const prevTo = endOfMonthUTC(prevMonth).toISOString();
+  const prevFrom = prevMonth.toISOString();
+  const prevTo = prevMonth.toISOString();
 
   console.log("server from" + from);
   console.log("server to" + to);
