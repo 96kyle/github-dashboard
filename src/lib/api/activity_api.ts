@@ -260,6 +260,9 @@ export const getActivities = async ({
     const result: DailyActivityMap = {};
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const a = new Date(from);
+    console.log("from ------>" + formatKorean(a.toISOString(), "yyyy-M"));
+
     json.data.search.nodes.forEach((node: any) => {
       const createdAt = new Date(node.createdAt);
       const searchDate = new Date(from);
