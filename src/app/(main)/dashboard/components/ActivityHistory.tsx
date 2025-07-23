@@ -1,6 +1,6 @@
 import { DailyActivityMap } from "@/app/types/activities/activity_type";
 import { formatKorean } from "@/app/util/date_format";
-import { format, toZonedTime } from "date-fns-tz";
+import { format } from "date-fns-tz";
 import {
   AlertCircle,
   Calendar,

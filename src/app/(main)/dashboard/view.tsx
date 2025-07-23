@@ -20,7 +20,6 @@ import ActivityLineChart from "./components/ActivityLineChart";
 import { useInView } from "react-intersection-observer";
 import ActivityBarChart from "./components/ActivityBarChart";
 import { MergedActivity } from "@/app/types/activities/activity_type";
-import { toZonedTime } from "date-fns-tz";
 import { addMonths, endOfMonth, startOfMonth, subMonths } from "date-fns";
 
 export default function DashboardView({

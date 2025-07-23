@@ -2,7 +2,7 @@
 
 import { startOfMonth, endOfMonth, eachDayOfInterval } from "date-fns";
 import { DailyActivityMap } from "@/app/types/activities/activity_type";
-import { format, toZonedTime } from "date-fns-tz";
+import { toZonedTime } from "date-fns-tz";
 import { formatKorean } from "@/app/util/date_format";
 
 export default function ActivityCalendar({
