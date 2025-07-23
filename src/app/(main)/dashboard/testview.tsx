@@ -1,23 +1,13 @@
 "use client";
 
 import { fetchData } from "@/lib/api/activity_api";
-import ActivityCount from "./components/ActivityCount";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import DashboardFallbackView from "./fallback/DashboardFallbackView";
 import { useDebounce } from "use-debounce";
 import { LoginInfo } from "../../types/users/user_type";
-import ActivityHistory from "./components/ActivityHistory";
-import {
-  AlertCircle,
-  GitCommit,
-  GitPullRequest,
-  MessageSquare,
-} from "lucide-react";
+
 import ActivityHeader from "./components/ActivityHeader";
-import ActivityLineChart from "./components/ActivityLineChart";
-import { useInView } from "react-intersection-observer";
-import ActivityBarChart from "./components/ActivityBarChart";
 import { MergedActivity } from "@/app/types/activities/activity_type";
 import { addMonths, endOfMonth, startOfMonth, subMonths } from "date-fns";
 
@@ -38,9 +28,6 @@ export default function TestView({
   const prevMonth = subMonths(debouncedDate, 1);
   const prevFrom = startOfMonth(prevMonth).toISOString();
   const prevTo = endOfMonth(prevMonth).toISOString();
-
-  const { ref, inView } = useInView({ threshold: 0.1 });
-  const [shouldRenderChart, setShouldRenderChart] = useState(false);
 
   const { data: prevData, isLoading: prevLoading } = useQuery<MergedActivity>({
     queryKey: ["activity", userInfo.username, prevFrom.substring(0, 10)],
@@ -74,15 +61,8 @@ export default function TestView({
     if (!prevLoading && !currentLoading) setIsPending(false);
   }, [prevData, currentData, prevLoading, currentLoading]);
 
-  useEffect(() => {
-    if (inView) {
-      setShouldRenderChart(true); // 한 번만 렌더링
-    }
-  }, [inView]);
-
   const moveMonth = async (isPrev: boolean) => {
     setIsPending(true);
-    setShouldRenderChart(false);
     if (isPrev) {
       setSelectedDate(startOfMonth(subMonths(selectedDate, 1)).toISOString());
     } else {
@@ -103,7 +83,7 @@ export default function TestView({
         ) : (
           <>
             <div className="flex flex-row mb-4 gap-6">
-              <ActivityCount
+              {/* <ActivityCount
                 count={currentData?.totalCount.commit ?? 0}
                 title="Commits"
                 Icon={GitCommit}
@@ -130,7 +110,7 @@ export default function TestView({
                 Icon={MessageSquare}
                 iconColor="text-purple-600"
                 beforeCount={prevData?.totalCount.review ?? 0}
-              />
+              /> */}
             </div>
             {/* <ActivityCalendar
               data={currentData!.map}
@@ -144,7 +124,7 @@ export default function TestView({
               setSelectedDate={setSelectedDate}
             /> */}
 
-            <ActivityHistory
+            {/* <ActivityHistory
               items={currentData?.map ?? {}}
               selectedDate={selectedDate}
             />
@@ -163,7 +143,7 @@ export default function TestView({
                 currActivity={currentData?.map ?? {}}
                 shouldRenderChart={shouldRenderChart}
               />
-            </div>
+            </div> */}
           </>
         )}
       </div>
