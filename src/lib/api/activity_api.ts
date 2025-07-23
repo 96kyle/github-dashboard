@@ -259,9 +259,6 @@ export const getActivities = async ({
 
     const result: DailyActivityMap = {};
 
-    const a = new Date(from);
-    console.log("from ------>" + formatKorean(a.toISOString(), "yyyy-M"));
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     json.data.search.nodes.forEach((node: any) => {
       const createdAt = new Date(node.createdAt);
@@ -286,6 +283,13 @@ export const getActivities = async ({
           state: node.state,
           repo,
         });
+      } else {
+        console.log(
+          "createTime --->" + formatKorean(createdAt.toISOString(), "yyyy-M")
+        );
+        console.log(
+          "from --->" + formatKorean(searchDate.toISOString(), "yyyy-M")
+        );
       }
     });
 
