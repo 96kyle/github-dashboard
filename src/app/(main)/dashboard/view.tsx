@@ -28,11 +28,9 @@ export default function DashboardView({
   date,
 }: {
   userInfo: LoginInfo;
-  date: Date;
+  date: string;
 }) {
-  const [selectedDate, setSelectedDate] = useState<Date>(
-    toZonedTime(date, "Asia/Seoul")
-  );
+  const [selectedDate, setSelectedDate] = useState<string>(date);
   const [isPending, setIsPending] = useState(false);
   const [debouncedDate] = useDebounce(selectedDate, 1000);
 
@@ -88,13 +86,9 @@ export default function DashboardView({
     setIsPending(true);
     setShouldRenderChart(false);
     if (isPrev) {
-      setSelectedDate(
-        toZonedTime(startOfMonth(subMonths(selectedDate, 1)), "Asia/Seoul")
-      );
+      setSelectedDate(startOfMonth(subMonths(selectedDate, 1)).toISOString());
     } else {
-      setSelectedDate(
-        toZonedTime(startOfMonth(addMonths(selectedDate, 1)), "Asia/Seoul")
-      );
+      setSelectedDate(startOfMonth(addMonths(selectedDate, 1)).toISOString());
     }
   };
 
@@ -166,9 +160,9 @@ export default function DashboardView({
               />
               <ActivityBarChart
                 today={date}
+                selectedDate={selectedDate}
                 prevActivity={prevData?.map ?? {}}
                 currActivity={currentData?.map ?? {}}
-                selectedDate={selectedDate}
                 shouldRenderChart={shouldRenderChart}
               />
             </div>

@@ -6,7 +6,6 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import { endOfMonth, startOfMonth, subMonths } from "date-fns";
-import { toZonedTime } from "date-fns-tz";
 import { getGitHubContext } from "@/lib/auth/github_auth";
 import { LoginInfo } from "@/app/types/users/user_type";
 import { Metadata } from "next";
@@ -27,8 +26,8 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
-  const date = new Date();
-  const today = toZonedTime(date, "Asia/Seoul");
+  const today = new Date();
+
   const from = startOfMonth(today).toISOString();
   const to = endOfMonth(today).toISOString();
 
@@ -65,7 +64,7 @@ export default async function DashboardPage() {
   return (
     <div>
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <DashboardView userInfo={userInfo} date={today} />
+        <DashboardView userInfo={userInfo} date={today.toISOString()} />
       </HydrationBoundary>
     </div>
   );

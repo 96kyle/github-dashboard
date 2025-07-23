@@ -1,4 +1,5 @@
 import { DailyActivityMap } from "@/app/types/activities/activity_type";
+import { formatKorean } from "@/app/util/date_format";
 import { format, toZonedTime } from "date-fns-tz";
 import {
   AlertCircle,
@@ -14,7 +15,7 @@ export default function ActivityHistory({
   selectedDate,
 }: {
   items: DailyActivityMap;
-  selectedDate: Date;
+  selectedDate: string;
 }) {
   const getActivityIcon = (type: string) => {
     switch (type) {
@@ -55,9 +56,7 @@ export default function ActivityHistory({
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
           {selectedDate
-            ? `${new Date(
-                toZonedTime(selectedDate, "Asia/Seoul")
-              ).getDate()}일 활동`
+            ? `${formatKorean(selectedDate, "d")}일 활동`
             : "날짜를 선택하세요"}
         </h3>
 

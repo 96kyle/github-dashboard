@@ -1,4 +1,6 @@
 import { DailyActivityMap } from "@/app/types/activities/activity_type";
+import { formatKorean } from "@/app/util/date_format";
+import { toZonedTime } from "date-fns-tz";
 import { ResponsiveContainer, Bar, BarChart, XAxis } from "recharts";
 
 export default function ActivityBarChart({
@@ -8,15 +10,14 @@ export default function ActivityBarChart({
   currActivity,
   shouldRenderChart,
 }: {
-  today: Date;
-  selectedDate: Date;
+  today: string;
+  selectedDate: string;
   prevActivity: DailyActivityMap;
   currActivity: DailyActivityMap;
   shouldRenderChart: boolean;
 }) {
   const nowMonth =
-    selectedDate.getMonth() === today.getMonth() &&
-    selectedDate.getFullYear() === today.getFullYear();
+    formatKorean(selectedDate, "yyyy-M") === formatKorean(today, "yyyy-M");
 
   const findDataByDate = (data: DailyActivityMap, day: number) => {
     const dayStr = day.toString().padStart(2, "0");
@@ -76,8 +77,8 @@ export default function ActivityBarChart({
       const prevKey = findDataByDate(prevActivity, i);
       const prevCount = prevKey ? prevActivity[prevKey].length : 0;
       const prevDay = new Date(
-        selectedDate.getFullYear(),
-        selectedDate.getMonth() - 1,
+        toZonedTime(selectedDate, "Asia/Seoul").getFullYear(),
+        toZonedTime(selectedDate, "Asia/Seoul").getMonth() - 1,
         i
       ).getDay();
       countList[prevDay].count += prevCount;
@@ -86,12 +87,12 @@ export default function ActivityBarChart({
       const currKey = findDataByDate(currActivity, i);
       const currCount = currKey ? currActivity[currKey].length : 0;
       const currDay = new Date(
-        selectedDate.getFullYear(),
-        selectedDate.getMonth(),
+        toZonedTime(selectedDate, "Asia/Seoul").getFullYear(),
+        toZonedTime(selectedDate, "Asia/Seoul").getMonth(),
         i
       ).getDay();
       countList[currDay].count += currCount;
-      if (!nowMonth || i <= today.getDate()) {
+      if (!nowMonth || i <= Number(formatKorean(today, "d"))) {
         countList[currDay].length++;
       }
     }

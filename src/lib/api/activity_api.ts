@@ -9,6 +9,7 @@ import {
 } from "@/app/types/activities/activity_type";
 import { ActivityReq } from "@/app/types/activities/activity_request";
 import { getGitHubContext } from "../auth/github_auth";
+import { formatKorean } from "@/app/util/date_format";
 
 const GITHUB_API = "https://api.github.com";
 const GITHUB_API_GRAPH = "https://api.github.com/graphql";
@@ -260,19 +261,21 @@ export const getActivities = async ({
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     json.data.search.nodes.forEach((node: any) => {
-      // const korDate = new Date(node.createdAt);
-      // const searchDate = new Date(from);
+      const createdAt = new Date(node.createdAt);
+      const searchDate = new Date(from);
 
-      // const date = `${korDate.getFullYear()}-${(korDate.getMonth() + 1)
-      //   .toString()
-      //   .padStart(2, "0")}-${korDate.getDate().toString().padStart(2, "0")}`;
       const type = node.url.includes("/pull/") ? "pr" : "issue";
       const repo = `${node.repository.owner.login}/${node.repository.name}`;
 
-      if (node.author.login === username) {
-        if (!result["2025-07-12"]) result["2025-07-12"] = [];
+      if (
+        node.author.login === username &&
+        formatKorean(createdAt.toISOString(), "yyyy-M") ===
+          formatKorean(searchDate.toISOString(), "yyyy-M")
+      ) {
+        const korDate = formatKorean(createdAt.toISOString(), "yyyy-MM-dd");
+        if (!result[korDate]) result[korDate] = [];
 
-        result["2025-07-12"].push({
+        result[korDate].push({
           title: node.title,
           url: node.url,
           createdAt: node.createdAt,
@@ -283,30 +286,33 @@ export const getActivities = async ({
       }
     });
 
-    // const reviews =
-    //   json.data.user.contributionsCollection.pullRequestReviewContributions
-    //     .nodes;
+    const reviews =
+      json.data.user.contributionsCollection.pullRequestReviewContributions
+        .nodes;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // reviews.forEach((review: any) => {
-    // const korDate = new Date(review.occurredAt);
-    // const searchDate = new Date(from);
-    // const date = `${korDate.getFullYear()}-${(korDate.getMonth() + 1)
-    //   .toString()
-    //   .padStart(2, "0")}-${korDate.getDate().toString().padStart(2, "0")}`;
-    // const repo = `${review.pullRequest.repository.owner.login}/${review.pullRequest.repository.name}`;
-    // if (korDate.getMonth() === searchDate.getMonth()) {
-    //   if (!result[date]) result[date] = [];
-    //   result[date].push({
-    //     title: review.pullRequest.title,
-    //     url: review.pullRequest.url,
-    //     createdAt: review.occurredAt,
-    //     type: "review",
-    //     state: review.pullRequest.state,
-    //     repo,
-    //   });
-    // }
-    // });
+    reviews.forEach((review: any) => {
+      const occurredAt = new Date(review.occurredAt);
+      const searchDate = new Date(from);
+
+      const repo = `${review.pullRequest.repository.owner.login}/${review.pullRequest.repository.name}`;
+
+      if (
+        formatKorean(occurredAt.toISOString(), "yyyy-M") ===
+        formatKorean(searchDate.toISOString(), "yyyy-M")
+      ) {
+        const korDate = formatKorean(occurredAt.toISOString(), "yyyy-MM-dd");
+        if (!result[korDate]) result[korDate] = [];
+        result[korDate].push({
+          title: review.pullRequest.title,
+          url: review.pullRequest.url,
+          createdAt: review.occurredAt,
+          type: "review",
+          state: review.pullRequest.state,
+          repo,
+        });
+      }
+    });
 
     return result;
   } catch (e) {

@@ -3,6 +3,7 @@
 import { startOfMonth, endOfMonth, eachDayOfInterval } from "date-fns";
 import { DailyActivityMap } from "@/app/types/activities/activity_type";
 import { format, toZonedTime } from "date-fns-tz";
+import { formatKorean } from "@/app/util/date_format";
 
 export default function ActivityCalendar({
   data,
@@ -12,19 +13,20 @@ export default function ActivityCalendar({
 }: {
   data: DailyActivityMap;
   count: number;
-  selectedDate: Date;
-  setSelectedDate: React.Dispatch<React.SetStateAction<Date>>;
+  selectedDate: string;
+  setSelectedDate: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const start = toZonedTime(startOfMonth(selectedDate), "Asia/Seoul");
   const end = toZonedTime(endOfMonth(selectedDate), "Asia/Seoul");
   const monthDays = eachDayOfInterval({ start, end });
 
-  const startDay = start.getDay();
+  const startDay = Number(formatKorean(start.toISOString(), "e"));
 
   const returnColor = (clickDate: Date) => {
-    const formatDate: string = format(clickDate, "yyyy-MM-dd", {
-      timeZone: "Asia/Seoul",
-    });
+    const formatDate: string = formatKorean(
+      clickDate.toISOString(),
+      "yyyy-MM-dd"
+    );
 
     if (data[formatDate]) {
       if (data[formatDate].length >= 5) {
@@ -68,12 +70,14 @@ export default function ActivityCalendar({
           <div key={i} className="h-12"></div>
         ))}
         {monthDays.map((day, index) => {
-          const isSelected = day.toDateString() === selectedDate.toDateString();
+          const isSelected =
+            formatKorean(day.toISOString(), "d") ===
+            formatKorean(selectedDate, "d");
 
           return (
             <button
               key={index}
-              onClick={() => setSelectedDate(toZonedTime(day, "Asia/Seoul"))}
+              onClick={() => setSelectedDate(day.toISOString())}
               className={`
                           h-12 rounded-lg border-2 transition-all duration-200 text-base font-medium flex items-center justify-center cursor-pointer
                           ${
@@ -86,7 +90,7 @@ export default function ActivityCalendar({
                           
                         `}
             >
-              {day.getDate()}
+              {formatKorean(day.toISOString(), "d")}
             </button>
           );
         })}

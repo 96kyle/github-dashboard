@@ -2,6 +2,7 @@ import {
   DailyActivityMap,
   MergedActivity,
 } from "@/app/types/activities/activity_type";
+import { formatKorean } from "@/app/util/date_format";
 import { subMonths } from "date-fns";
 import {
   AreaChart,
@@ -18,17 +19,16 @@ export default function ActivityChart({
   currentActivity,
   shouldRenderChart,
 }: {
-  today: Date;
-  selectedDate: Date;
+  today: string;
+  selectedDate: string;
   prevActivity: MergedActivity;
   currentActivity: MergedActivity;
   shouldRenderChart: boolean;
 }) {
   const maxDay = 31;
   const currentMonthDayLimit =
-    selectedDate.getMonth() === today.getMonth() &&
-    selectedDate.getFullYear() === today.getFullYear()
-      ? today.getDate()
+    formatKorean(selectedDate, "yyyy-M") === formatKorean(today, "yyyy-M")
+      ? Number(formatKorean(today, "d"))
       : maxDay;
   const prevCount =
     (prevActivity?.totalCount.commit ?? 0) +
@@ -86,11 +86,10 @@ export default function ActivityChart({
 
   const countPrevMonth = (): number => {
     if (
-      selectedDate.getMonth() === today.getMonth() &&
-      selectedDate.getFullYear() === today.getFullYear()
+      formatKorean(selectedDate, "yyyy-M") === formatKorean(today, "yyyy-M")
     ) {
       let count = 0;
-      for (let i = 1; i <= today.getDate(); i++) {
+      for (let i = 1; i <= Number(formatKorean(today, "d")); i++) {
         const key = findDataByDate(prevActivity.map, i);
         count = count + (key ? prevActivity.map[key].length : 0);
       }
@@ -107,18 +106,18 @@ export default function ActivityChart({
 
   const titleCommnet = (): string => {
     if (
-      selectedDate.getMonth() === today.getMonth() &&
-      selectedDate.getFullYear() === today.getFullYear()
+      formatKorean(selectedDate, "yyyy-M") === formatKorean(today, "yyyy-M")
     ) {
       if (diff > 0) {
-        return `지난달 ${subMonths(today, 1).getDate()}일 보다 ${Math.abs(
-          diff
-        )}번의 많은 활동을 했어요`;
+        return `지난달 ${formatKorean(
+          subMonths(today, 1).toISOString(),
+          "d"
+        )}일 보다 ${Math.abs(diff)}번의 많은 활동을 했어요`;
       } else if (diff < 0) {
-        return `지난달에 비해 ${subMonths(
-          today,
-          1
-        ).getDate()}일 보다 ${Math.abs(diff)}번의 적은 활동을 했어요`;
+        return `지난달에 비해 ${formatKorean(
+          subMonths(today, 1).toISOString(),
+          "d"
+        )}일 보다 ${Math.abs(diff)}번의 적은 활동을 했어요`;
       } else {
         return `지난달과 동일한 활동을 했어요`;
       }
@@ -193,9 +192,9 @@ export default function ActivityChart({
       </div>
       <div className="flex flex-row justify-center items-center gap-2 pt-4">
         <div className="w-8 h-1 bg-[#6366F1] "></div>
-        <div>{selectedDate.getMonth() + 1}월</div>
+        <div>{Number(formatKorean(selectedDate, "M"))}월</div>
         <div className="w-8 h-1 bg-[#d1d5db] "></div>
-        <div>{selectedDate.getMonth()}월</div>
+        <div>{Number(formatKorean(selectedDate, "M")) - 1}월</div>
       </div>
     </div>
   );
