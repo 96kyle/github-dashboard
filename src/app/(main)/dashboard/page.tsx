@@ -29,11 +29,7 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
-  const d = new Date();
-
-  const today = new Date(
-    Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
-  );
+  const today = new Date();
 
   const from = startOfMonthUTC(today).toISOString();
   const to = endOfMonthUTC(today).toISOString();
