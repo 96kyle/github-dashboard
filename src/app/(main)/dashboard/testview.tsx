@@ -4,7 +4,6 @@ import { fetchData } from "@/lib/api/activity_api";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import DashboardFallbackView from "./fallback/DashboardFallbackView";
-import { useDebounce } from "use-debounce";
 import { LoginInfo } from "../../types/users/user_type";
 
 import ActivityHeader from "./components/ActivityHeader";
@@ -20,12 +19,11 @@ export default function TestView({
 }) {
   const [selectedDate, setSelectedDate] = useState<string>(date);
   const [isPending, setIsPending] = useState(false);
-  const [debouncedDate] = useDebounce(selectedDate, 1000);
 
-  const from = startOfMonth(debouncedDate).toISOString();
-  const to = endOfMonth(debouncedDate).toISOString();
+  const from = startOfMonth(selectedDate).toISOString();
+  const to = endOfMonth(selectedDate).toISOString();
 
-  const prevMonth = subMonths(debouncedDate, 1);
+  const prevMonth = subMonths(selectedDate, 1);
   const prevFrom = startOfMonth(prevMonth).toISOString();
   const prevTo = endOfMonth(prevMonth).toISOString();
 
@@ -52,10 +50,6 @@ export default function TestView({
 
       staleTime: 1000 * 60 * 5,
     });
-
-  useEffect(() => {
-    setSelectedDate(debouncedDate);
-  }, [debouncedDate]);
 
   useEffect(() => {
     if (!prevLoading && !currentLoading) setIsPending(false);
