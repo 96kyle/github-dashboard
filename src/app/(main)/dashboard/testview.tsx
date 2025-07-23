@@ -3,7 +3,7 @@
 import { fetchData } from "@/lib/api/activity_api";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import DashboardFallbackView from "./fallback/DashboardFallbackView";
+// import DashboardFallbackView from "./fallback/DashboardFallbackView";
 import { useDebounce } from "use-debounce";
 import { LoginInfo } from "../../types/users/user_type";
 
@@ -18,7 +18,7 @@ export default function TestView({
   date: string;
 }) {
   const [selectedDate, setSelectedDate] = useState<string>(date);
-  const [isPending, setIsPending] = useState(false);
+  // const [isPending, setIsPending] = useState(false);
   const [debouncedDate] = useDebounce(selectedDate, 1000);
 
   const from = startOfMonth(debouncedDate).toISOString();
@@ -28,7 +28,7 @@ export default function TestView({
   const prevFrom = startOfMonth(prevMonth).toISOString();
   const prevTo = endOfMonth(prevMonth).toISOString();
 
-  const { data: prevData, isLoading: prevLoading } = useQuery<MergedActivity>({
+  useQuery<MergedActivity>({
     queryKey: ["activity", userInfo.username, prevFrom.substring(0, 10)],
     queryFn: () =>
       fetchData({
@@ -39,26 +39,25 @@ export default function TestView({
     staleTime: 1000 * 60 * 5,
   });
 
-  const { data: currentData, isLoading: currentLoading } =
-    useQuery<MergedActivity>({
-      queryKey: ["activity", userInfo.username, from.substring(0, 10)],
-      queryFn: () =>
-        fetchData({
-          from,
-          to,
-          isServer: false,
-        }),
+  useQuery<MergedActivity>({
+    queryKey: ["activity", userInfo.username, from.substring(0, 10)],
+    queryFn: () =>
+      fetchData({
+        from,
+        to,
+        isServer: false,
+      }),
 
-      staleTime: 1000 * 60 * 5,
-    });
+    staleTime: 1000 * 60 * 5,
+  });
 
   useEffect(() => {
     setSelectedDate(debouncedDate);
   }, [debouncedDate]);
 
-  useEffect(() => {
-    if (!prevLoading && !currentLoading) setIsPending(false);
-  }, [prevData, currentData, prevLoading, currentLoading]);
+  // useEffect(() => {
+  //   if (!prevLoading && !currentLoading) setIsPending(false);
+  // }, [prevData, currentData, prevLoading, currentLoading]);
 
   // const moveMonth = async (isPrev: boolean) => {
   //   setIsPending(true);
@@ -77,12 +76,12 @@ export default function TestView({
         selectedDate={selectedDate}
       /> */}
       <div className="w-full p-6 max-w-[1300px] self-center">
-        {prevLoading || currentLoading || isPending ? (
+        {/* {prevLoading || currentLoading || isPending ? (
           <DashboardFallbackView />
-        ) : (
-          <>
-            <div className="flex flex-row mb-4 gap-6">
-              {/* <ActivityCount
+        ) : ( */}
+        <>
+          <div className="flex flex-row mb-4 gap-6">
+            {/* <ActivityCount
                 count={currentData?.totalCount.commit ?? 0}
                 title="Commits"
                 Icon={GitCommit}
@@ -110,8 +109,8 @@ export default function TestView({
                 iconColor="text-purple-600"
                 beforeCount={prevData?.totalCount.review ?? 0}
               /> */}
-            </div>
-            {/* <ActivityCalendar
+          </div>
+          {/* <ActivityCalendar
               data={currentData!.map}
               count={
                 (currentData?.totalCount.commit ?? 0) +
@@ -123,7 +122,7 @@ export default function TestView({
               setSelectedDate={setSelectedDate}
             /> */}
 
-            {/* <ActivityHistory
+          {/* <ActivityHistory
               items={currentData?.map ?? {}}
               selectedDate={selectedDate}
             />
@@ -143,8 +142,8 @@ export default function TestView({
                 shouldRenderChart={shouldRenderChart}
               />
             </div> */}
-          </>
-        )}
+        </>
+        {/* )} */}
       </div>
     </div>
   );
