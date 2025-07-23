@@ -29,7 +29,11 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
-  const today = new Date();
+  const d = new Date();
+
+  const today = new Date(
+    Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
+  );
 
   const from = startOfMonthUTC(today).toISOString();
   const to = endOfMonthUTC(today).toISOString();
@@ -72,7 +76,7 @@ export default async function DashboardPage() {
   return (
     <div>
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <DashboardView userInfo={userInfo} date={today.toISOString()} />
+        <DashboardView userInfo={userInfo} date={today} />
       </HydrationBoundary>
     </div>
   );

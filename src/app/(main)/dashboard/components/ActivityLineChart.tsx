@@ -19,8 +19,8 @@ export default function ActivityChart({
   currentActivity,
   shouldRenderChart,
 }: {
-  today: string;
-  selectedDate: string;
+  today: Date;
+  selectedDate: Date;
   prevActivity: MergedActivity;
   currentActivity: MergedActivity;
   shouldRenderChart: boolean;

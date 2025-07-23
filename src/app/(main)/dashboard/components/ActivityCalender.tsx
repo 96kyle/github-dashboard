@@ -1,9 +1,9 @@
 "use client";
 
-import { startOfMonth, endOfMonth, eachDayOfInterval } from "date-fns";
+import { eachDayOfInterval } from "date-fns";
 import { DailyActivityMap } from "@/app/types/activities/activity_type";
-import { toZonedTime } from "date-fns-tz";
 import { formatKorean } from "@/app/util/date_format";
+import { endOfMonthUTC, startOfMonthUTC } from "@/app/util/date_util";
 
 export default function ActivityCalendar({
   data,
@@ -13,11 +13,11 @@ export default function ActivityCalendar({
 }: {
   data: DailyActivityMap;
   count: number;
-  selectedDate: string;
-  setSelectedDate: React.Dispatch<React.SetStateAction<string>>;
+  selectedDate: Date;
+  setSelectedDate: React.Dispatch<React.SetStateAction<Date>>;
 }) {
-  const start = toZonedTime(startOfMonth(selectedDate), "Asia/Seoul");
-  const end = toZonedTime(endOfMonth(selectedDate), "Asia/Seoul");
+  const start = startOfMonthUTC(selectedDate);
+  const end = endOfMonthUTC(selectedDate);
   const monthDays = eachDayOfInterval({ start, end });
 
   const startDay = Number(formatKorean(start.toISOString(), "e"));
@@ -72,12 +72,12 @@ export default function ActivityCalendar({
         {monthDays.map((day, index) => {
           const isSelected =
             formatKorean(day.toISOString(), "d") ===
-            formatKorean(selectedDate, "d");
+            formatKorean(selectedDate.toISOString(), "d");
 
           return (
             <button
               key={index}
-              onClick={() => setSelectedDate(day.toISOString())}
+              onClick={() => setSelectedDate(day)}
               className={`
                           h-12 rounded-lg border-2 transition-all duration-200 text-base font-medium flex items-center justify-center cursor-pointer
                           ${

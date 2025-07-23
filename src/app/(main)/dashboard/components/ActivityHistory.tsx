@@ -15,7 +15,7 @@ export default function ActivityHistory({
   selectedDate,
 }: {
   items: DailyActivityMap;
-  selectedDate: string;
+  selectedDate: Date;
 }) {
   const getActivityIcon = (type: string) => {
     switch (type) {
@@ -56,7 +56,7 @@ export default function ActivityHistory({
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
           {selectedDate
-            ? `${formatKorean(selectedDate, "d")}일 활동`
+            ? `${formatKorean(selectedDate.toISOString(), "d")}일 활동`
             : "날짜를 선택하세요"}
         </h3>
 

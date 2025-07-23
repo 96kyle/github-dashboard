@@ -28,11 +28,9 @@ export default function DashboardView({
   date,
 }: {
   userInfo: LoginInfo;
-  date: string;
+  date: Date;
 }) {
-  const [selectedDate, setSelectedDate] = useState<string>(
-    new Date(date).toISOString()
-  );
+  const [selectedDate, setSelectedDate] = useState<Date>(date);
   const [isPending, setIsPending] = useState(false);
   const [debouncedDate] = useDebounce(selectedDate, 1000);
 
@@ -95,13 +93,9 @@ export default function DashboardView({
     setIsPending(true);
     setShouldRenderChart(false);
     if (isPrev) {
-      setSelectedDate(
-        startOfMonthUTC(subMonths(selectedDate, 1)).toISOString()
-      );
+      setSelectedDate(startOfMonthUTC(subMonths(selectedDate, 1)));
     } else {
-      setSelectedDate(
-        startOfMonthUTC(addMonths(selectedDate, 1)).toISOString()
-      );
+      setSelectedDate(startOfMonthUTC(addMonths(selectedDate, 1)));
     }
   };
 

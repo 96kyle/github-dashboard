@@ -10,8 +10,8 @@ export default function ActivityBarChart({
   currActivity,
   shouldRenderChart,
 }: {
-  today: string;
-  selectedDate: string;
+  today: Date;
+  selectedDate: Date;
   prevActivity: DailyActivityMap;
   currActivity: DailyActivityMap;
   shouldRenderChart: boolean;

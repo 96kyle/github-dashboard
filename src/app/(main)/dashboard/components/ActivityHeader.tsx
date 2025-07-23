@@ -11,7 +11,7 @@ export default function ActivityHeader({
 }: {
   username: string;
   moveMonth: (isPrev: boolean) => Promise<void>;
-  selectedDate: string;
+  selectedDate: Date;
 }) {
   const { data: session } = useSession();
 
