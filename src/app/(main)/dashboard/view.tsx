@@ -1,7 +1,7 @@
 "use client";
 
 import { fetchData } from "@/lib/api/activity_api";
-import ActivityCalendar from "@/app/(main)/dashboard/components/ActivityCalender";
+// import ActivityCalendar from "@/app/(main)/dashboard/components/ActivityCalender";
 import ActivityCount from "./components/ActivityCount";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -143,7 +143,7 @@ export default function DashboardView({
                 beforeCount={prevData?.totalCount.review ?? 0}
               />
             </div>
-            <ActivityCalendar
+            {/* <ActivityCalendar
               data={currentData!.map}
               count={
                 (currentData?.totalCount.commit ?? 0) +
@@ -153,7 +153,7 @@ export default function DashboardView({
               }
               selectedDate={selectedDate}
               setSelectedDate={setSelectedDate}
-            />
+            /> */}
 
             <ActivityHistory
               items={currentData?.map ?? {}}
