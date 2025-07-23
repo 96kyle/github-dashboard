@@ -37,10 +37,7 @@ export default async function DashboardPage() {
   const prevFrom = startOfMonth(prevMonth).toISOString();
   const prevTo = endOfMonth(prevMonth).toISOString();
 
-  console.log("from date" + from);
-  console.log("to date" + to);
-  console.log("prevfrom date" + prevFrom);
-  console.log("prevto date" + prevTo);
+  console.log("server today" + today);
 
   const queryClient = new QueryClient();
 

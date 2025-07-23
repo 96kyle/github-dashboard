@@ -68,13 +68,7 @@ export default function DashboardView({
     });
 
   useEffect(() => {
-    console.log("props date" + date);
-    console.log("selected date" + selectedDate);
-    console.log("debounce date" + debouncedDate);
-    console.log("from date" + from);
-    console.log("to date" + to);
-    console.log("prevfrom date" + prevFrom);
-    console.log("prevto date" + prevTo);
+    console.log("client today" + selectedDate);
   }, []);
 
   useEffect(() => {
