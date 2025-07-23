@@ -1,21 +1,24 @@
-// date_util.ts
-import { endOfMonth as dfEndOfMonth, format } from "date-fns";
-import { toZonedTime } from "date-fns-tz";
+import { endOfMonth, parse, format } from "date-fns";
+import { toDate } from "date-fns-tz";
 
-const TZ = "Asia/Seoul";
+const TIMEZONE = "Asia/Seoul";
 
-export function startOfMonthUTC(date: string | Date): Date {
-  const d = new Date(date);
-  const formatted = format(
-    new Date(d.getFullYear(), d.getMonth(), 1),
-    "yyyy-MM-dd 00:00:00"
-  );
-  return toZonedTime(formatted, TZ);
+function parseSeoulToUTC(dateStr: string): Date {
+  const parsed = parse(dateStr, "yyyy-MM-dd HH:mm:ss", new Date());
+  return toDate(parsed, { timeZone: TIMEZONE });
 }
 
-export function endOfMonthUTC(date: string | Date): Date {
+export function startOfMonthUTC(date: Date | string): Date {
   const d = new Date(date);
-  const endDate = dfEndOfMonth(new Date(d.getFullYear(), d.getMonth(), 1));
-  const formatted = format(endDate, "yyyy-MM-dd 23:59:59");
-  return toZonedTime(formatted, TZ);
+  const y = d.getFullYear();
+  const m = d.getMonth();
+  const dateStr = `${y}-${String(m + 1).padStart(2, "0")}-01 00:00:00`;
+  return parseSeoulToUTC(dateStr);
+}
+
+export function endOfMonthUTC(date: Date | string): Date {
+  const d = new Date(date);
+  const endDate = endOfMonth(d);
+  const dateStr = `${format(endDate, "yyyy-MM-dd")} 23:59:59`;
+  return parseSeoulToUTC(dateStr);
 }
