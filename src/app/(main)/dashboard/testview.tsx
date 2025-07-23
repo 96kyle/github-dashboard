@@ -76,6 +76,7 @@ export default function TestView({
         selectedDate={selectedDate}
       /> */}
       <div className="w-full p-6 max-w-[1300px] self-center">
+        {selectedDate}
         {/* {prevLoading || currentLoading || isPending ? (
           <DashboardFallbackView />
         ) : ( */}

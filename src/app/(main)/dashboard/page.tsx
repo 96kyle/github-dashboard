@@ -10,7 +10,7 @@ import { getGitHubContext } from "@/lib/auth/github_auth";
 import { LoginInfo } from "@/app/types/users/user_type";
 import { Metadata } from "next";
 import { MergedActivity } from "@/app/types/activities/activity_type";
-import TestView from "./testview";
+import DashboardView from "./view";
 // import DashboardView from "./view";
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
-  const today = new Date();
+  const today = new Date(2025, 6, 23);
 
   const from = startOfMonth(today).toISOString();
   const to = endOfMonth(today).toISOString();
@@ -66,7 +66,7 @@ export default async function DashboardPage() {
   return (
     <div>
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <TestView userInfo={userInfo} date={today.toISOString()} />
+        <DashboardView userInfo={userInfo} date={today.toISOString()} />
       </HydrationBoundary>
     </div>
   );
