@@ -1,22 +1,34 @@
 "use client";
 
 import { fetchData } from "@/lib/api/activity_api";
-import { endOfMonth, startOfMonth, subMonths } from "date-fns";
+import ActivityCount from "./components/ActivityCount";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import DashboardFallbackView from "./fallback/DashboardFallbackView";
 import { useDebounce } from "use-debounce";
 import { LoginInfo } from "../../types/users/user_type";
+import ActivityHistory from "./components/ActivityHistory";
+import {
+  AlertCircle,
+  GitCommit,
+  GitPullRequest,
+  MessageSquare,
+} from "lucide-react";
+import ActivityHeader from "./components/ActivityHeader";
+import ActivityLineChart from "./components/ActivityLineChart";
+import { useInView } from "react-intersection-observer";
+import ActivityBarChart from "./components/ActivityBarChart";
 import { MergedActivity } from "@/app/types/activities/activity_type";
+import { addMonths, endOfMonth, startOfMonth, subMonths } from "date-fns";
 
 export default function TestView({
   userInfo,
   date,
 }: {
   userInfo: LoginInfo;
-  date: Date;
+  date: string;
 }) {
-  const [selectedDate, setSelectedDate] = useState<Date>(date);
+  const [selectedDate, setSelectedDate] = useState<string>(date);
   const [isPending, setIsPending] = useState(false);
   const [debouncedDate] = useDebounce(selectedDate, 1000);
 
@@ -27,11 +39,11 @@ export default function TestView({
   const prevFrom = startOfMonth(prevMonth).toISOString();
   const prevTo = endOfMonth(prevMonth).toISOString();
 
-  // const { ref, inView } = useInView({ threshold: 0.1 });
-  // const [shouldRenderChart, setShouldRenderChart] = useState(false);
+  const { ref, inView } = useInView({ threshold: 0.1 });
+  const [shouldRenderChart, setShouldRenderChart] = useState(false);
 
   const { data: prevData, isLoading: prevLoading } = useQuery<MergedActivity>({
-    queryKey: ["activity", userInfo.username, prevFrom],
+    queryKey: ["activity", userInfo.username, prevFrom.substring(0, 10)],
     queryFn: () =>
       fetchData({
         from: prevFrom,
@@ -43,7 +55,7 @@ export default function TestView({
 
   const { data: currentData, isLoading: currentLoading } =
     useQuery<MergedActivity>({
-      queryKey: ["activity", userInfo.username, from],
+      queryKey: ["activity", userInfo.username, from.substring(0, 10)],
       queryFn: () =>
         fetchData({
           from,
@@ -62,36 +74,36 @@ export default function TestView({
     if (!prevLoading && !currentLoading) setIsPending(false);
   }, [prevData, currentData, prevLoading, currentLoading]);
 
-  // useEffect(() => {
-  //   if (inView) {
-  //     setShouldRenderChart(true); // 한 번만 렌더링
-  //   }
-  // }, [inView]);
+  useEffect(() => {
+    if (inView) {
+      setShouldRenderChart(true); // 한 번만 렌더링
+    }
+  }, [inView]);
 
-  // const moveMonth = async (isPrev: boolean) => {
-  //   setIsPending(true);
-  //   // setShouldRenderChart(false);
-  //   if (isPrev) {
-  //     setSelectedDate(startOfMonth(subMonths(selectedDate, 1)));
-  //   } else {
-  //     setSelectedDate(startOfMonth(addMonths(selectedDate, 1)));
-  //   }
-  // };
+  const moveMonth = async (isPrev: boolean) => {
+    setIsPending(true);
+    setShouldRenderChart(false);
+    if (isPrev) {
+      setSelectedDate(startOfMonth(subMonths(selectedDate, 1)).toISOString());
+    } else {
+      setSelectedDate(startOfMonth(addMonths(selectedDate, 1)).toISOString());
+    }
+  };
 
   return (
     <div className="flex flex-col items-center">
-      {/* <ActivityHeader
+      <ActivityHeader
         username={userInfo.username}
         moveMonth={moveMonth}
         selectedDate={selectedDate}
-      /> */}
+      />
       <div className="w-full p-6 max-w-[1300px] self-center">
         {prevLoading || currentLoading || isPending ? (
           <DashboardFallbackView />
         ) : (
           <>
             <div className="flex flex-row mb-4 gap-6">
-              {/* <ActivityCount
+              <ActivityCount
                 count={currentData?.totalCount.commit ?? 0}
                 title="Commits"
                 Icon={GitCommit}
@@ -120,7 +132,7 @@ export default function TestView({
                 beforeCount={prevData?.totalCount.review ?? 0}
               />
             </div>
-            <ActivityCalendar
+            {/* <ActivityCalendar
               data={currentData!.map}
               count={
                 (currentData?.totalCount.commit ?? 0) +
@@ -130,7 +142,7 @@ export default function TestView({
               }
               selectedDate={selectedDate}
               setSelectedDate={setSelectedDate}
-            />
+            /> */}
 
             <ActivityHistory
               items={currentData?.map ?? {}}
@@ -146,11 +158,11 @@ export default function TestView({
               />
               <ActivityBarChart
                 today={date}
+                selectedDate={selectedDate}
                 prevActivity={prevData?.map ?? {}}
                 currActivity={currentData?.map ?? {}}
-                selectedDate={selectedDate}
                 shouldRenderChart={shouldRenderChart}
-              /> */}
+              />
             </div>
           </>
         )}

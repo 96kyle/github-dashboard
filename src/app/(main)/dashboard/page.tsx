@@ -1,5 +1,5 @@
 import { fetchData } from "@/lib/api/activity_api";
-import DashboardView from "./view";
+// import DashboardView from "./view";
 import {
   dehydrate,
   HydrationBoundary,
@@ -10,6 +10,7 @@ import { getGitHubContext } from "@/lib/auth/github_auth";
 import { LoginInfo } from "@/app/types/users/user_type";
 import { Metadata } from "next";
 import { MergedActivity } from "@/app/types/activities/activity_type";
+import TestView from "./testview";
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
@@ -64,7 +65,7 @@ export default async function DashboardPage() {
   return (
     <div>
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <DashboardView userInfo={userInfo} date={today.toISOString()} />
+        <TestView userInfo={userInfo} date={today.toISOString()} />
       </HydrationBoundary>
     </div>
   );
