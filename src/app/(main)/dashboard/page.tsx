@@ -37,11 +37,6 @@ export default async function DashboardPage() {
   const prevFrom = prevMonth.toISOString();
   const prevTo = prevMonth.toISOString();
 
-  console.log("server from" + from);
-  console.log("server to" + to);
-  console.log("server prevfrom" + prevFrom);
-  console.log("server to" + prevTo);
-
   const queryClient = new QueryClient();
 
   const userInfo: LoginInfo = await getGitHubContext();

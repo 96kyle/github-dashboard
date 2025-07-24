@@ -44,8 +44,6 @@ export default function DashboardView({
   const { ref, inView } = useInView({ threshold: 0.1 });
   const [shouldRenderChart, setShouldRenderChart] = useState(false);
 
-  console.log(["activity", userInfo.username, prevFrom.substring(0, 10)]);
-
   const { data: prevData, isLoading: prevLoading } = useQuery<MergedActivity>({
     queryKey: ["activity", userInfo.username, prevFrom.substring(0, 10)],
     queryFn: () =>
@@ -69,13 +67,6 @@ export default function DashboardView({
 
       staleTime: 1000 * 60 * 5,
     });
-
-  useEffect(() => {
-    console.log("client from" + from);
-    console.log("client to" + to);
-    console.log("client prevfrom" + prevFrom);
-    console.log("client to" + prevTo);
-  }, []);
 
   useEffect(() => {
     setSelectedDate(debouncedDate);

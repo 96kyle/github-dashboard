@@ -3,12 +3,13 @@ import {
   ActivityType,
   CommitContributionEntry,
   DailyActivityMap,
-  // GithubIssueOrPRNode,
+  GithubIssueOrPRNode,
   MergedActivity,
-  // PullRequestReviewContributionNode,
+  PullRequestReviewContributionNode,
 } from "@/app/types/activities/activity_type";
 import { ActivityReq } from "@/app/types/activities/activity_request";
 import { getGitHubContext } from "../auth/github_auth";
+import { formatKorean } from "@/app/util/date_format";
 
 const GITHUB_API = "https://api.github.com";
 const GITHUB_API_GRAPH = "https://api.github.com/graphql";
@@ -258,66 +259,56 @@ export const getActivities = async ({
 
     const result: DailyActivityMap = {};
 
-    // json.data.search.nodes.forEach((node: any) => {
-    //   const createdAt = new Date(node.createdAt);
-    //   const searchDate = new Date(from);
+    json.data.search.nodes.forEach((node: GithubIssueOrPRNode) => {
+      const createdAt = new Date(node.createdAt);
+      // const searchDate = new Date(from);
 
-    //   const type = node.url.includes("/pull/") ? "pr" : "issue";
-    //   const repo = `${node.repository.owner.login}/${node.repository.name}`;
+      const type = node.url.includes("/pull/") ? "pr" : "issue";
+      const repo = `${node.repository.owner.login}/${node.repository.name}`;
 
-    //   if (
-    //     node.author.login === username &&
-    //     formatKorean(createdAt.toISOString(), "yyyy-M") ===
-    //       formatKorean(searchDate.toISOString(), "yyyy-M")
-    //   ) {
-    //     const korDate = formatKorean(createdAt.toISOString(), "yyyy-MM-dd");
-    //     if (!result[korDate]) result[korDate] = [];
+      if (node.author.login === username) {
+        const korDate = formatKorean(createdAt.toISOString(), "yyyy-MM-dd");
+        console.log("response로 오는 date" + node.createdAt);
+        console.log("new Date로 재 정의한 date" + createdAt);
 
-    //     result[korDate].push({
-    //       title: node.title,
-    //       url: node.url,
-    //       createdAt: node.createdAt,
-    //       type,
-    //       state: node.state,
-    //       repo,
-    //     });
-    //   } else {
-    //     console.log("username --->" + username);
-    //     console.log(
-    //       "createTime --->" + formatKorean(createdAt.toISOString(), "yyyy-M")
-    //     );
-    //     console.log(
-    //       "from --->" + formatKorean(searchDate.toISOString(), "yyyy-M")
-    //     );
-    //   }
-    // });
+        if (!result[korDate]) result[korDate] = [];
 
-    // const reviews =
-    //   json.data.user.contributionsCollection.pullRequestReviewContributions
-    //     .nodes;
+        result[korDate].push({
+          title: node.title,
+          url: node.url,
+          createdAt: node.createdAt,
+          type,
+          state: node.state,
+          repo,
+        });
+      }
+    });
 
-    // reviews.forEach((review: any) => {
-    //   const occurredAt = new Date(review.occurredAt);
-    //   const searchDate = new Date(from);
+    const reviews =
+      json.data.user.contributionsCollection.pullRequestReviewContributions
+        .nodes;
 
-    //   const repo = `${review.pullRequest.repository.owner.login}/${review.pullRequest.repository.name}`;
+    reviews.forEach((review: PullRequestReviewContributionNode) => {
+      const occurredAt = new Date(review.occurredAt);
+      // const searchDate = new Date(from);
 
-    //   if (
-    //     formatKorean(occurredAt.toISOString(), "yyyy-M") ===
-    //     formatKorean(searchDate.toISOString(), "yyyy-M")
-    //   ) {
-    //     const korDate = formatKorean(occurredAt.toISOString(), "yyyy-MM-dd");
-    //     if (!result[korDate]) result[korDate] = [];
-    //     result[korDate].push({
-    //       title: review.pullRequest.title,
-    //       url: review.pullRequest.url,
-    //       createdAt: review.occurredAt,
-    //       type: "review",
-    //       state: review.pullRequest.state,
-    //       repo,
-    //     });
-    //   }
-    // });
+      const repo = `${review.pullRequest.repository.owner.login}/${review.pullRequest.repository.name}`;
+
+      const korDate = formatKorean(occurredAt.toISOString(), "yyyy-MM-dd");
+
+      console.log("response로 오는 date" + review.occurredAt);
+      console.log("new Date로 재 정의한 date" + occurredAt);
+
+      if (!result[korDate]) result[korDate] = [];
+      result[korDate].push({
+        title: review.pullRequest.title,
+        url: review.pullRequest.url,
+        createdAt: review.occurredAt,
+        type: "review",
+        state: review.pullRequest.state,
+        repo,
+      });
+    });
 
     return result;
   } catch (e) {
