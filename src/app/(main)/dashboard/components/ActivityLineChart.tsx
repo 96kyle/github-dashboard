@@ -2,8 +2,8 @@ import {
   DailyActivityMap,
   MergedActivity,
 } from "@/app/types/activities/activity_type";
-import { formatKorean } from "@/app/util/date_format";
 import { subMonths } from "date-fns";
+import { format } from "date-fns-tz";
 import {
   AreaChart,
   Area,
@@ -27,8 +27,8 @@ export default function ActivityChart({
 }) {
   const maxDay = 31;
   const currentMonthDayLimit =
-    formatKorean(selectedDate, "yyyy-M") === formatKorean(today, "yyyy-M")
-      ? Number(formatKorean(today, "d"))
+    format(selectedDate, "yyyy-M") === format(today, "yyyy-M")
+      ? Number(format(today, "d"))
       : maxDay;
   const prevCount =
     (prevActivity?.totalCount.commit ?? 0) +
@@ -85,11 +85,9 @@ export default function ActivityChart({
   };
 
   const countPrevMonth = (): number => {
-    if (
-      formatKorean(selectedDate, "yyyy-M") === formatKorean(today, "yyyy-M")
-    ) {
+    if (format(selectedDate, "yyyy-M") === format(today, "yyyy-M")) {
       let count = 0;
-      for (let i = 1; i <= Number(formatKorean(today, "d")); i++) {
+      for (let i = 1; i <= Number(format(today, "d")); i++) {
         const key = findDataByDate(prevActivity.map, i);
         count = count + (key ? prevActivity.map[key].length : 0);
       }
@@ -105,16 +103,14 @@ export default function ActivityChart({
   const diff = currentCount - countPrevMonth();
 
   const titleCommnet = (): string => {
-    if (
-      formatKorean(selectedDate, "yyyy-M") === formatKorean(today, "yyyy-M")
-    ) {
+    if (format(selectedDate, "yyyy-M") === format(today, "yyyy-M")) {
       if (diff > 0) {
-        return `지난달 ${formatKorean(
+        return `지난달 ${format(
           subMonths(today, 1).toISOString(),
           "d"
         )}일 보다 ${Math.abs(diff)}번의 많은 활동을 했어요`;
       } else if (diff < 0) {
-        return `지난달에 비해 ${formatKorean(
+        return `지난달에 비해 ${format(
           subMonths(today, 1).toISOString(),
           "d"
         )}일 보다 ${Math.abs(diff)}번의 적은 활동을 했어요`;
@@ -192,9 +188,9 @@ export default function ActivityChart({
       </div>
       <div className="flex flex-row justify-center items-center gap-2 pt-4">
         <div className="w-8 h-1 bg-[#6366F1] "></div>
-        <div>{Number(formatKorean(selectedDate, "M"))}월</div>
+        <div>{Number(format(selectedDate, "M"))}월</div>
         <div className="w-8 h-1 bg-[#d1d5db] "></div>
-        <div>{Number(formatKorean(selectedDate, "M")) - 1}월</div>
+        <div>{Number(format(selectedDate, "M")) - 1}월</div>
       </div>
     </div>
   );

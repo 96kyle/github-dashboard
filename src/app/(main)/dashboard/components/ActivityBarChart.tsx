@@ -1,6 +1,5 @@
 import { DailyActivityMap } from "@/app/types/activities/activity_type";
-import { formatKorean } from "@/app/util/date_format";
-import { toZonedTime } from "date-fns-tz";
+import { format, toZonedTime } from "date-fns-tz";
 import { ResponsiveContainer, Bar, BarChart, XAxis } from "recharts";
 
 export default function ActivityBarChart({
@@ -16,8 +15,7 @@ export default function ActivityBarChart({
   currActivity: DailyActivityMap;
   shouldRenderChart: boolean;
 }) {
-  const nowMonth =
-    formatKorean(selectedDate, "yyyy-M") === formatKorean(today, "yyyy-M");
+  const nowMonth = format(selectedDate, "yyyy-M") === format(today, "yyyy-M");
 
   const findDataByDate = (data: DailyActivityMap, day: number) => {
     const dayStr = day.toString().padStart(2, "0");
@@ -92,7 +90,7 @@ export default function ActivityBarChart({
         i
       ).getDay();
       countList[currDay].count += currCount;
-      if (!nowMonth || i <= Number(formatKorean(today, "d"))) {
+      if (!nowMonth || i <= Number(format(today, "d"))) {
         countList[currDay].length++;
       }
     }

@@ -3,6 +3,7 @@
 import { eachDayOfInterval, endOfMonth, startOfMonth } from "date-fns";
 import { DailyActivityMap } from "@/app/types/activities/activity_type";
 import { formatKorean } from "@/app/util/date_format";
+import { format } from "date-fns-tz";
 
 export default function ActivityCalendar({
   data,
@@ -73,8 +74,7 @@ export default function ActivityCalendar({
         ))}
         {monthDays.map((day, index) => {
           const isSelected =
-            formatKorean(day.toISOString(), "d") ===
-            formatKorean(selectedDate.toISOString(), "d");
+            formatKorean(day.toISOString(), "d") === format(selectedDate, "d");
 
           return (
             <button
@@ -92,7 +92,7 @@ export default function ActivityCalendar({
                           
                         `}
             >
-              {formatKorean(day.toISOString(), "d")}
+              {formatKorean(day, "d")}
             </button>
           );
         })}
