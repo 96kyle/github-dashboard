@@ -31,7 +31,7 @@ export default function DashboardView({
   date: Date;
 }) {
   const timeZone = "Asia/Seoul";
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date(date));
+  const [selectedDate, setSelectedDate] = useState<Date>(date);
   const [isPending, setIsPending] = useState(false);
   const [debouncedDate] = useDebounce(selectedDate, 1000);
 
