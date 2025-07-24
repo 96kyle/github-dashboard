@@ -46,9 +46,6 @@ export default async function DashboardPage() {
   const prevFrom = fromZonedTime(prevMonthStart, timeZone).toISOString();
   const prevTo = fromZonedTime(prevMonthEnd, timeZone).toISOString();
 
-  console.log(from);
-  console.log(to);
-
   const queryClient = new QueryClient();
 
   const userInfo: LoginInfo = await getGitHubContext();
