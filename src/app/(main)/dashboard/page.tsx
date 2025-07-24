@@ -50,7 +50,9 @@ export default async function DashboardPage() {
 
   const userInfo: LoginInfo = await getGitHubContext();
 
+  console.log(new Date());
   console.log(today);
+  console.log(toZonedTime(today, timeZone));
 
   await queryClient.prefetchQuery<MergedActivity>({
     queryKey: ["activity", userInfo.username, prevFrom.substring(0, 10)],

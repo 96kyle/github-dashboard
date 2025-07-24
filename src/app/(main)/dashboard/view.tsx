@@ -21,7 +21,7 @@ import ActivityBarChart from "./components/ActivityBarChart";
 import { MergedActivity } from "@/app/types/activities/activity_type";
 import { addMonths, endOfMonth, startOfMonth, subMonths } from "date-fns";
 import ActivityCalendar from "./components/ActivityCalender";
-import { fromZonedTime } from "date-fns-tz";
+import { fromZonedTime, toZonedTime } from "date-fns-tz";
 
 export default function DashboardView({
   userInfo,
@@ -31,7 +31,9 @@ export default function DashboardView({
   date: Date;
 }) {
   const timeZone = "Asia/Seoul";
-  const [selectedDate, setSelectedDate] = useState<Date>(date);
+  const [selectedDate, setSelectedDate] = useState<Date>(
+    toZonedTime(new Date(), timeZone)
+  );
   const [isPending, setIsPending] = useState(false);
   const [debouncedDate] = useDebounce(selectedDate, 1000);
 
