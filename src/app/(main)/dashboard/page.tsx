@@ -31,17 +31,14 @@ export const metadata: Metadata = {
 export default async function DashboardPage() {
   const timeZone = "Asia/Seoul";
 
-  // 현재 KST 시간 기준으로 계산
   const today = toZonedTime(new Date(), timeZone);
 
-  // KST 기준 월 시작/끝을 구한 후 UTC로 변환
   const monthStart = startOfMonth(today);
   const monthEnd = endOfMonth(today);
 
   const from = fromZonedTime(monthStart, timeZone).toISOString();
   const to = fromZonedTime(monthEnd, timeZone).toISOString();
 
-  // 이전 달
   const prevMonth = subMonths(today, 1);
   const prevMonthStart = startOfMonth(prevMonth);
   const prevMonthEnd = endOfMonth(prevMonth);

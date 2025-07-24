@@ -21,6 +21,7 @@ import ActivityBarChart from "./components/ActivityBarChart";
 import { MergedActivity } from "@/app/types/activities/activity_type";
 import { addMonths, endOfMonth, startOfMonth, subMonths } from "date-fns";
 import ActivityCalendar from "./components/ActivityCalender";
+import { fromZonedTime, toZonedTime } from "date-fns-tz";
 
 export default function DashboardView({
   userInfo,
@@ -29,16 +30,25 @@ export default function DashboardView({
   userInfo: LoginInfo;
   date: Date;
 }) {
-  const [selectedDate, setSelectedDate] = useState<Date>(date);
+  const timeZone = "Asia/Seoul";
+  const [selectedDate, setSelectedDate] = useState<Date>(
+    toZonedTime(date, timeZone)
+  );
   const [isPending, setIsPending] = useState(false);
   const [debouncedDate] = useDebounce(selectedDate, 1000);
 
-  const from = startOfMonth(debouncedDate).toISOString();
-  const to = endOfMonth(debouncedDate).toISOString();
+  const monthStart = startOfMonth(debouncedDate);
+  const monthEnd = endOfMonth(debouncedDate);
+
+  const from = fromZonedTime(monthStart, timeZone).toISOString();
+  const to = fromZonedTime(monthEnd, timeZone).toISOString();
 
   const prevMonth = subMonths(debouncedDate, 1);
-  const prevFrom = startOfMonth(prevMonth).toISOString();
-  const prevTo = endOfMonth(prevMonth).toISOString();
+  const prevMonthStart = startOfMonth(prevMonth);
+  const prevMonthEnd = endOfMonth(prevMonth);
+
+  const prevFrom = fromZonedTime(prevMonthStart, timeZone).toISOString();
+  const prevTo = fromZonedTime(prevMonthEnd, timeZone).toISOString();
 
   const { ref, inView } = useInView({ threshold: 0.1 });
   const [shouldRenderChart, setShouldRenderChart] = useState(false);
