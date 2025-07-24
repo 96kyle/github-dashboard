@@ -11,6 +11,7 @@ import { LoginInfo } from "@/app/types/users/user_type";
 import { Metadata } from "next";
 import { MergedActivity } from "@/app/types/activities/activity_type";
 import DashboardView from "./view";
+import { toZonedTime, fromZonedTime } from "date-fns-tz";
 // import DashboardView from "./view";
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -28,14 +29,28 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
-  const today = new Date();
+  const timeZone = "Asia/Seoul";
 
-  const from = startOfMonth(today).toISOString();
-  const to = endOfMonth(today).toISOString();
+  // 현재 KST 시간 기준으로 계산
+  const today = toZonedTime(new Date(), timeZone);
 
+  // KST 기준 월 시작/끝을 구한 후 UTC로 변환
+  const monthStart = startOfMonth(today);
+  const monthEnd = endOfMonth(today);
+
+  const from = fromZonedTime(monthStart, timeZone).toISOString();
+  const to = fromZonedTime(monthEnd, timeZone).toISOString();
+
+  // 이전 달
   const prevMonth = subMonths(today, 1);
-  const prevFrom = startOfMonth(prevMonth).toISOString();
-  const prevTo = endOfMonth(prevMonth).toISOString();
+  const prevMonthStart = startOfMonth(prevMonth);
+  const prevMonthEnd = endOfMonth(prevMonth);
+
+  const prevFrom = fromZonedTime(prevMonthStart, timeZone).toISOString();
+  const prevTo = fromZonedTime(prevMonthEnd, timeZone).toISOString();
+
+  console.log(from);
+  console.log(to);
 
   const queryClient = new QueryClient();
 
