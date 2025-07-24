@@ -382,12 +382,8 @@ export const fetchData = async ({
   isServer: boolean;
 }): Promise<MergedActivity> => {
   if (isServer) {
-    console.log("서버 from" + from);
-    console.log("서버 to" + to);
     return serverFetch({ from, to });
   } else {
-    console.log("클라 from" + from);
-    console.log("클라 to" + to);
     return clientFetch({ from, to });
   }
 };
