@@ -21,7 +21,7 @@ import ActivityBarChart from "./components/ActivityBarChart";
 import { MergedActivity } from "@/app/types/activities/activity_type";
 import { addMonths, endOfMonth, startOfMonth, subMonths } from "date-fns";
 import ActivityCalendar from "./components/ActivityCalender";
-import { fromZonedTime, toZonedTime } from "date-fns-tz";
+import { fromZonedTime } from "date-fns-tz";
 
 export default function DashboardView({
   userInfo,
