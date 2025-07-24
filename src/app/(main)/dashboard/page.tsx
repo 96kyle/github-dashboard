@@ -5,7 +5,7 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-import { endOfMonth, startOfMonth, subMonths } from "date-fns";
+import { subMonths } from "date-fns";
 import { getGitHubContext } from "@/lib/auth/github_auth";
 import { LoginInfo } from "@/app/types/users/user_type";
 import { Metadata } from "next";
@@ -37,6 +37,9 @@ export default async function DashboardPage() {
   const prevMonth = subMonths(today, 1);
   const prevFrom = startOfMonthUTC(prevMonth).toISOString();
   const prevTo = endOfMonthUTC(prevMonth).toISOString();
+
+  console.log(from);
+  console.log(to);
 
   const queryClient = new QueryClient();
 
