@@ -38,8 +38,8 @@ export default async function DashboardPage() {
   const prevFrom = startOfMonthUTC(prevMonth).toISOString();
   const prevTo = endOfMonthUTC(prevMonth).toISOString();
 
-  console.log("server start time -->" + startOfMonth(today).toISOString());
-  console.log("server end time -->" + endOfMonth(today).toISOString());
+  console.log("server start time --->" + startOfMonth(today).toISOString());
+  console.log("server end time --->" + endOfMonth(today).toISOString());
 
   const queryClient = new QueryClient();
 
