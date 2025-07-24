@@ -19,6 +19,9 @@ const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 export const metadata: Metadata = {
   title: "GitHub 활동분석",
   description: "GitHub 커밋, PR, 이슈 활동들을 시각화합니다.",
+  other: {
+    "google-site-verification": "cgWvwatnB0H5kzf8j78Kz-FX6MV2NAZ8AtGhqP7DoYg",
+  },
   openGraph: {
     title: "GitHub 활동 분석",
     description: "GitHub 커밋, PR, 이슈 활동들을 시각화합니다.",
@@ -49,10 +52,6 @@ export default async function DashboardPage() {
   const queryClient = new QueryClient();
 
   const userInfo: LoginInfo = await getGitHubContext();
-
-  console.log(new Date());
-  console.log(today);
-  console.log(toZonedTime(today, timeZone));
 
   await queryClient.prefetchQuery<MergedActivity>({
     queryKey: ["activity", userInfo.username, prevFrom.substring(0, 10)],
