@@ -268,8 +268,6 @@ export const getActivities = async ({
 
       if (node.author.login === username) {
         const korDate = formatKorean(createdAt.toISOString(), "yyyy-MM-dd");
-        console.log("response로 오는 date" + node.createdAt);
-        console.log("new Date로 재 정의한 date" + createdAt);
 
         if (!result[korDate]) result[korDate] = [];
 
@@ -295,9 +293,6 @@ export const getActivities = async ({
       const repo = `${review.pullRequest.repository.owner.login}/${review.pullRequest.repository.name}`;
 
       const korDate = formatKorean(occurredAt.toISOString(), "yyyy-MM-dd");
-
-      console.log("response로 오는 date" + review.occurredAt);
-      console.log("new Date로 재 정의한 date" + occurredAt);
 
       if (!result[korDate]) result[korDate] = [];
       result[korDate].push({
@@ -387,8 +382,12 @@ export const fetchData = async ({
   isServer: boolean;
 }): Promise<MergedActivity> => {
   if (isServer) {
+    console.log("서버 from" + from);
+    console.log("서버 to" + to);
     return serverFetch({ from, to });
   } else {
+    console.log("클라 from" + from);
+    console.log("클라 to" + to);
     return clientFetch({ from, to });
   }
 };
