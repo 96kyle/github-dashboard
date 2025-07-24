@@ -80,13 +80,7 @@ export default function ActivityHistory({
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-gray-500">
-                        {format(
-                          new Date(activity.createdAt),
-                          "yyyy년 MM월 dd일 hh시 mm분 a",
-                          {
-                            timeZone: "Asia/Seoul",
-                          }
-                        )}
+                        {activity.createdAt.toString()}
                       </span>
                       <span className="px-2 py-1 bg-white bg-opacity-80 rounded text-xs font-medium">
                         {activity.type}
