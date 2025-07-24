@@ -23,17 +23,10 @@ import { addMonths, endOfMonth, startOfMonth, subMonths } from "date-fns";
 import ActivityCalendar from "./components/ActivityCalender";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
 
-export default function DashboardView({
-  userInfo,
-  date,
-}: {
-  userInfo: LoginInfo;
-  date: Date;
-}) {
+export default function DashboardView({ userInfo }: { userInfo: LoginInfo }) {
   const timeZone = "Asia/Seoul";
-  const [selectedDate, setSelectedDate] = useState<Date>(
-    toZonedTime(new Date(), timeZone)
-  );
+  const today = toZonedTime(new Date(), timeZone);
+  const [selectedDate, setSelectedDate] = useState<Date>(today);
   const [isPending, setIsPending] = useState(false);
   const [debouncedDate] = useDebounce(selectedDate, 1000);
 
@@ -161,14 +154,14 @@ export default function DashboardView({
             />
             <div ref={ref} className="flex flex-row gap-6 mt-4">
               <ActivityLineChart
-                today={date}
+                today={today}
                 selectedDate={selectedDate}
                 prevActivity={prevData!}
                 currentActivity={currentData!}
                 shouldRenderChart={shouldRenderChart}
               />
               <ActivityBarChart
-                today={date}
+                today={today}
                 selectedDate={selectedDate}
                 prevActivity={prevData?.map ?? {}}
                 currActivity={currentData?.map ?? {}}
