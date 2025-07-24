@@ -30,8 +30,6 @@ export default function DashboardView({
   userInfo: LoginInfo;
   date: Date;
 }) {
-  console.log(new Date());
-
   const [selectedDate, setSelectedDate] = useState<Date>(date);
   const [isPending, setIsPending] = useState(false);
   const [debouncedDate] = useDebounce(selectedDate, 1000);
@@ -46,8 +44,8 @@ export default function DashboardView({
   const { ref, inView } = useInView({ threshold: 0.1 });
   const [shouldRenderChart, setShouldRenderChart] = useState(false);
 
-  console.log(startOfMonth(date));
-  console.log(endOfMonth(date));
+  console.log("client start time -->" + startOfMonth(date).toISOString());
+  console.log("client end time -->" + endOfMonth(date).toISOString());
 
   const { data: prevData, isLoading: prevLoading } = useQuery<MergedActivity>({
     queryKey: ["activity", userInfo.username, prevFrom.substring(0, 10)],
