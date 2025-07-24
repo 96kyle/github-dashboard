@@ -261,13 +261,15 @@ export const getActivities = async ({
 
     json.data.search.nodes.forEach((node: GithubIssueOrPRNode) => {
       const createdAt = new Date(node.createdAt);
-      // const searchDate = new Date(from);
 
       const type = node.url.includes("/pull/") ? "pr" : "issue";
       const repo = `${node.repository.owner.login}/${node.repository.name}`;
 
-      if (node.author.login === username) {
-        const korDate = formatKorean(createdAt.toISOString(), "yyyy-MM-dd");
+      if (
+        node.author.login === username &&
+        formatKorean(createdAt, "M") === formatKorean(new Date(from), "M")
+      ) {
+        const korDate = formatKorean(createdAt, "yyyy-MM-dd");
 
         if (!result[korDate]) result[korDate] = [];
 
@@ -294,15 +296,17 @@ export const getActivities = async ({
 
       const korDate = formatKorean(occurredAt.toISOString(), "yyyy-MM-dd");
 
-      if (!result[korDate]) result[korDate] = [];
-      result[korDate].push({
-        title: review.pullRequest.title,
-        url: review.pullRequest.url,
-        createdAt: review.occurredAt,
-        type: "review",
-        state: review.pullRequest.state,
-        repo,
-      });
+      if (formatKorean(occurredAt, "M") === formatKorean(new Date(from), "M")) {
+        if (!result[korDate]) result[korDate] = [];
+        result[korDate].push({
+          title: review.pullRequest.title,
+          url: review.pullRequest.url,
+          createdAt: review.occurredAt,
+          type: "review",
+          state: review.pullRequest.state,
+          repo,
+        });
+      }
     });
 
     return result;
