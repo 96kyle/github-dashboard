@@ -44,8 +44,8 @@ export default function DashboardView({
   const { ref, inView } = useInView({ threshold: 0.1 });
   const [shouldRenderChart, setShouldRenderChart] = useState(false);
 
-  console.log("client start time -->" + startOfMonth(date).toISOString());
-  console.log("client end time -->" + endOfMonth(date).toISOString());
+  console.log("client start time -->" + startOfMonth(date).toUTCString());
+  console.log("client end time -->" + endOfMonth(date).toUTCString());
 
   const { data: prevData, isLoading: prevLoading } = useQuery<MergedActivity>({
     queryKey: ["activity", userInfo.username, prevFrom.substring(0, 10)],
