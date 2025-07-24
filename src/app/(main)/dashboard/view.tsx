@@ -20,7 +20,6 @@ import { useInView } from "react-intersection-observer";
 import ActivityBarChart from "./components/ActivityBarChart";
 import { MergedActivity } from "@/app/types/activities/activity_type";
 import { addMonths, endOfMonth, startOfMonth, subMonths } from "date-fns";
-import { endOfMonthUTC, startOfMonthUTC } from "@/app/util/date_util";
 import ActivityCalendar from "./components/ActivityCalender";
 
 export default function DashboardView({
@@ -34,18 +33,15 @@ export default function DashboardView({
   const [isPending, setIsPending] = useState(false);
   const [debouncedDate] = useDebounce(selectedDate, 1000);
 
-  const from = startOfMonthUTC(debouncedDate).toISOString();
-  const to = endOfMonthUTC(debouncedDate).toISOString();
+  const from = startOfMonth(debouncedDate).toISOString();
+  const to = endOfMonth(debouncedDate).toISOString();
 
   const prevMonth = subMonths(debouncedDate, 1);
-  const prevFrom = startOfMonthUTC(prevMonth).toISOString();
-  const prevTo = endOfMonthUTC(prevMonth).toISOString();
+  const prevFrom = startOfMonth(prevMonth).toISOString();
+  const prevTo = endOfMonth(prevMonth).toISOString();
 
   const { ref, inView } = useInView({ threshold: 0.1 });
   const [shouldRenderChart, setShouldRenderChart] = useState(false);
-
-  console.log("client start time -->" + startOfMonth(date).toUTCString());
-  console.log("client end time -->" + endOfMonth(date).toUTCString());
 
   const { data: prevData, isLoading: prevLoading } = useQuery<MergedActivity>({
     queryKey: ["activity", userInfo.username, prevFrom.substring(0, 10)],
@@ -89,9 +85,9 @@ export default function DashboardView({
     setIsPending(true);
     setShouldRenderChart(false);
     if (isPrev) {
-      setSelectedDate(startOfMonthUTC(subMonths(selectedDate, 1)));
+      setSelectedDate(startOfMonth(subMonths(selectedDate, 1)));
     } else {
-      setSelectedDate(startOfMonthUTC(addMonths(selectedDate, 1)));
+      setSelectedDate(startOfMonth(addMonths(selectedDate, 1)));
     }
   };
 

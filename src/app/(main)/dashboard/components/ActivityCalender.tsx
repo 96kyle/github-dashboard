@@ -1,9 +1,8 @@
 "use client";
 
-import { eachDayOfInterval } from "date-fns";
+import { eachDayOfInterval, endOfMonth, startOfMonth } from "date-fns";
 import { DailyActivityMap } from "@/app/types/activities/activity_type";
 import { formatKorean } from "@/app/util/date_format";
-import { endOfMonthUTC, startOfMonthUTC } from "@/app/util/date_util";
 
 export default function ActivityCalendar({
   data,
@@ -16,8 +15,8 @@ export default function ActivityCalendar({
   selectedDate: Date;
   setSelectedDate: React.Dispatch<React.SetStateAction<Date>>;
 }) {
-  const start = startOfMonthUTC(selectedDate);
-  const end = endOfMonthUTC(selectedDate);
+  const start = startOfMonth(selectedDate);
+  const end = endOfMonth(selectedDate);
   const monthDays = eachDayOfInterval({ start, end });
 
   const startDay =
