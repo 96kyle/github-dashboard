@@ -1,5 +1,6 @@
 import { DailyActivityMap } from "@/app/types/activities/activity_type";
 import { formatKorean } from "@/app/util/date_format";
+import { format } from "date-fns-tz";
 import {
   AlertCircle,
   Calendar,
@@ -46,14 +47,14 @@ export default function ActivityHistory({
     }
   };
 
-  const selectedDateToString: string = formatKorean(selectedDate, "yyyy-MM-dd");
+  const selectedDateToString: string = format(selectedDate, "yyyy-MM-dd");
 
   return (
     <div className="space-y-6 mt-4 ">
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
           {selectedDate
-            ? `${formatKorean(selectedDate, "d")}일 활동`
+            ? `${format(selectedDate, "d")}일 활동`
             : "날짜를 선택하세요"}
         </h3>
 

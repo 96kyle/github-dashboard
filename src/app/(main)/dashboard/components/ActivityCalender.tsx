@@ -20,6 +20,10 @@ export default function ActivityCalendar({
   const end = endOfMonth(selectedDate);
   const monthDays = eachDayOfInterval({ start, end });
 
+  console.log("Calendar date ==>> " + selectedDate);
+  console.log("format ==>> " + format(selectedDate, "d"));
+  console.log("koreaFormat ==>> " + formatKorean(selectedDate, "d"));
+
   const startDay =
     Number(formatKorean(start.toISOString(), "e")) === 7
       ? 0
