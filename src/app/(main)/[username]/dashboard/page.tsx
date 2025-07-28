@@ -8,7 +8,6 @@ import {
 import { endOfMonth, startOfMonth, subMonths } from "date-fns";
 import { getGitHubContext } from "@/lib/auth/github_auth";
 import { LoginInfo } from "@/app/types/users/user_type";
-import { Metadata } from "next";
 import { MergedActivity } from "@/app/types/activities/activity_type";
 import DashboardView from "./view";
 import { toZonedTime, fromZonedTime } from "date-fns-tz";

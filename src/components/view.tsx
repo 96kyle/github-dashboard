@@ -12,7 +12,7 @@ export default function HomeView() {
   const { data: session } = useSession();
   useEffect(() => {
     if (session) router.push(`/${session!.username}/dashboard`);
-  }, []);
+  }, [router, session]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

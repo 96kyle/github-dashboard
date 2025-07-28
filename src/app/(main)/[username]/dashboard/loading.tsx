@@ -1,9 +1,3 @@
-import {
-  AlertCircle,
-  GitCommit,
-  GitPullRequest,
-  MessageSquare,
-} from "lucide-react";
 import DashboardFallbackView from "./fallback/DashboardFallbackView";
 import DashboardHeaderFallback from "./fallback/DashboardHeaderFallbackView";
 
