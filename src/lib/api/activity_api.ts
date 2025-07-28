@@ -319,11 +319,13 @@ export const getActivities = async ({
 export const serverFetch = async ({
   from,
   to,
+  username,
 }: {
   from: string;
   to: string;
+  username: string;
 }): Promise<MergedActivity> => {
-  const { username, token } = await getGitHubContext();
+  const token = await getGitHubContext();
 
   const commitMap = await getAllCommits({ username, from, to, token });
   const activityMap = await getActivities({ username, from, to, token });
@@ -359,14 +361,16 @@ export const serverFetch = async ({
 export const clientFetch = async ({
   from,
   to,
+  username,
 }: {
   from: string;
   to: string;
+  username: string;
 }): Promise<MergedActivity> => {
   const res = await fetch("/api/github/activity", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ from, to }),
+    body: JSON.stringify({ from, to, username }),
   });
 
   if (!res.ok) throw new Error("클라이언트 요청 실패");
@@ -380,14 +384,16 @@ export const fetchData = async ({
   from,
   to,
   isServer,
+  username,
 }: {
   from: string;
   to: string;
   isServer: boolean;
+  username: string;
 }): Promise<MergedActivity> => {
   if (isServer) {
-    return serverFetch({ from, to });
+    return serverFetch({ from, to, username });
   } else {
-    return clientFetch({ from, to });
+    return clientFetch({ from, to, username });
   }
 };

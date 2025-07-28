@@ -14,24 +14,11 @@ import DashboardView from "./view";
 import { toZonedTime, fromZonedTime } from "date-fns-tz";
 // import DashboardView from "./view";
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+export default async function DashboardPage(context: {
+  params: Promise<{ username: string }>;
+}) {
+  const username = (await context.params).username;
 
-export const metadata: Metadata = {
-  title: "GitHub 활동분석",
-  description: "GitHub 커밋, PR, 이슈 활동들을 시각화합니다.",
-  other: {
-    "google-site-verification": "cgWvwatnB0H5kzf8j78Kz-FX6MV2NAZ8AtGhqP7DoYg",
-  },
-  openGraph: {
-    title: "GitHub 활동 분석",
-    description: "GitHub 커밋, PR, 이슈 활동들을 시각화합니다.",
-    url: `${baseUrl}/dashboard`,
-    siteName: "GitHub Activity Analysis",
-    type: "website",
-  },
-};
-
-export default async function DashboardPage() {
   const timeZone = "Asia/Seoul";
 
   const today = toZonedTime(new Date(), timeZone);
@@ -51,7 +38,9 @@ export default async function DashboardPage() {
 
   const queryClient = new QueryClient();
 
-  const userInfo: LoginInfo = await getGitHubContext();
+  const token = await getGitHubContext();
+
+  const userInfo: LoginInfo = { username: username, token };
 
   await queryClient.prefetchQuery<MergedActivity>({
     queryKey: ["activity", userInfo.username, prevFrom.substring(0, 10)],
@@ -60,6 +49,7 @@ export default async function DashboardPage() {
         from: prevFrom,
         to: prevTo,
         isServer: true,
+        username: userInfo.username,
       }),
     staleTime: 1000 * 60 * 5,
   });
@@ -71,6 +61,7 @@ export default async function DashboardPage() {
         from: from,
         to: to,
         isServer: true,
+        username: userInfo.username,
       }),
     staleTime: 1000 * 60 * 5,
   });

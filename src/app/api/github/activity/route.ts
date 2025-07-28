@@ -3,7 +3,7 @@ import { serverFetch } from "@/lib/api/activity_api";
 
 export async function POST(req: Request) {
   try {
-    const { from, to } = await req.json();
+    const { from, to, username } = await req.json();
 
     if (!from || !to) {
       return NextResponse.json(
@@ -12,7 +12,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const data = await serverFetch({ from, to });
+    const data = await serverFetch({ from, to, username });
 
     return NextResponse.json(data, { status: 200 });
   } catch (e) {

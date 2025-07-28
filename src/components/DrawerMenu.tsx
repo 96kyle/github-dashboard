@@ -12,15 +12,18 @@ const DrawerMenu = () => {
   const menuItems = [
     {
       name: "Dashboard",
-      path: "/dashboard",
+      path: "dashboard",
       icon: <FaChartSimple size={28} />,
     },
     {
       name: "Challenge",
-      path: "/challenge",
+      path: "challenge",
       icon: <FaFireFlameSimple size={28} />,
     },
   ];
+
+  const pathParts = pathname.split("/");
+  const username = pathParts[1] || "";
 
   return (
     <div className="w-[320px] bg-white text-fontNavy py-4 px-4 border-r-2 border-gray-300">
@@ -29,23 +32,28 @@ const DrawerMenu = () => {
         <div className="text-2xl font-bold py-2">Activity Analysis</div>
       </div>
       <ul className="py-6">
-        {menuItems.map((item) => (
-          <li key={item.path}>
-            <Link
-              href={item.path}
-              className={`block px-2 py-3 rounded text-base ${
-                pathname === item.path
-                  ? "bg-gray-700 font-bold text-white"
-                  : "hover:bg-gray-200 font-semibold text-fontGrey"
-              }`}
-            >
-              <div className="flex flex-row items-center gap-2 text-xl">
-                {item.icon}
-                {item.name}
-              </div>
-            </Link>
-          </li>
-        ))}
+        {menuItems.map((item) => {
+          const fullPath = `/${username}/${item.path}`;
+          const isActive = pathname.startsWith(fullPath);
+
+          return (
+            <li key={item.path}>
+              <Link
+                href={fullPath}
+                className={`block px-2 py-3 rounded text-base ${
+                  isActive
+                    ? "bg-gray-700 font-bold text-white"
+                    : "hover:bg-gray-200 font-semibold text-fontGrey"
+                }`}
+              >
+                <div className="flex flex-row items-center gap-2 text-xl">
+                  {item.icon}
+                  {item.name}
+                </div>
+              </Link>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
