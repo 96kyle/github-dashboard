@@ -21,7 +21,7 @@ export default function HomeView() {
   };
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen gap-4 p-4re">
+    <main className="flex flex-col items-center justify-center min-h-screen gap-4 p-4">
       <h1 className="text-2xl font-bold">GitHub ID 검색</h1>
       <form onSubmit={handleSubmit} className="flex gap-2">
         <input
