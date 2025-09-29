@@ -24,7 +24,6 @@ export default function ActivityCalendar({
     Number(formatKorean(start.toISOString(), "e")) === 7
       ? 0
       : Number(formatKorean(start.toISOString(), "e")) - 1;
-
   const returnColor = (clickDate: Date) => {
     const formatDate: string = formatKorean(
       clickDate.toISOString(),

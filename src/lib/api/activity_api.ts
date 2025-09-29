@@ -152,7 +152,7 @@ export const getAllCommits = async ({
 
   for (const commits of results) {
     for (const commit of commits) {
-      const date = commit.createdAt.split("T")[0];
+      const date = formatKorean(commit.createdAt, "yyyy-MM-dd");
       if (!result[date]) result[date] = [];
 
       result[date].push(commit);
